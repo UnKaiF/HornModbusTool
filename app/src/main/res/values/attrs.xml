@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ExpandButton">
+        <attr name="inflateState" format="enum" >
+            <enum name="deflated" value="0"/>
+            <enum name="inflated" value="1"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="EntityStateButton">
+        <attr name="entityState" format="enum" >
+            <enum name="inactive" value="0"/>
+            <enum name="active" value="1"/>
+        </attr>
+        <attr name="entitySubState" format="enum" >
+            <enum name="unknown" value="0"/>
+            <enum name="error" value="1"/>
+            <enum name="good" value="2"/>
+        </attr>
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_load_map"
+        android:title="@string/string_load_device_map"
+        android:icon="@drawable/baseline_file_download_48"
+        android:orderInCategory="5"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_save_map"
+        android:title="@string/string_save_device_map"
+        android:icon="@drawable/baseline_file_upload_48"
+        android:orderInCategory="4"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_settings"
+        android:title="@string/string_settings"
+        android:icon="@drawable/baseline_build_48"
+        android:orderInCategory="2"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/menu_auto_query"
+        android:title="@string/string_auto_query"
+        android:icon="@drawable/baseline_renew_48"
+        android:orderInCategory="1"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/menu_deflate_all"
+        android:title="@string/string_collapse_all"
+        android:icon="@drawable/circle_less_48"
+        android:orderInCategory="3"
+        app:showAsAction="always" />
+</menu>

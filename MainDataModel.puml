@@ -1,0 +1,29 @@
+@startuml
+class com.basisdas.HornModbusTool.datamodels.SerialCommunicationLine {
+- SerialParameters serialParameters
+- MBProtocolType protocolType
+'- ArrayList<SlaveDevice> modbusSlaveDevices
+}
+class com.basisdas.HornModbusTool.datamodels.MDOParameters {
++ int startingAddress
++ MDOArea mdoArea
++ InterpretationBitSize elementBitSize
++ InterpretationType elementType
++ boolean elementsReversed
++ boolean registersSwapped
+}
+class com.basisdas.HornModbusTool.datamodels.ModbusDataObject {
+- String name
+'- MDOParameters params
+- String Value
+}
+class com.basisdas.HornModbusTool.datamodels.SlaveDevice {
+- int slaveID
+- String deviceName
+'- ArrayList<ModbusDataObject> modbusDataObjects
+}
+
+com.basisdas.HornModbusTool.datamodels.SerialCommunicationLine "1" --> "*" com.basisdas.HornModbusTool.datamodels.SlaveDevice
+com.basisdas.HornModbusTool.datamodels.SlaveDevice "1"  --> "1..*" com.basisdas.HornModbusTool.datamodels.ModbusDataObject
+com.basisdas.HornModbusTool.datamodels.ModbusDataObject "1" --> "1" com.basisdas.HornModbusTool.datamodels.MDOParameters
+@enduml

@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">HornModbusTool</string>
+
+
+    <string name="string_log">Журнал</string>
+
+    <string name="string_main_title">Устройства</string>
+
+    <string name="string_save_log">Сохранить журнал</string>
+    <string name="string_load_log">Загрузить журнил</string>
+
+    <string name="string_save_device_map">Сохранить карту</string>
+    <string name="string_load_device_map">Загрузить карту</string>
+
+    <string name="string_settings">Установки</string>
+    <string name="string_collapse_all">Свернуть всё</string>
+
+    <string name="string_auto_query">Автоматический опрос</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

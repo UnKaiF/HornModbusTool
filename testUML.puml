@@ -1,0 +1,120 @@
+@startuml
+class com.basisdas.HornModbusTool.datamodels.MDODataContainer {
+- boolean[] container
++ void setFromJlibModbusArray(int)
++ void setFromJlibModbusArray(boolean)
++ int[] getJlibModbusIntArray()
++ boolean[] getJlibModbusBoolArray()
++ void setFromBasicElements(int,long)
++ long[] getBasicElements(int)
++ void reverseBasicElements(int)
++ void swapRegisters(int)
++ boolean isEmpty()
++ void clear()
+}
+class com.basisdas.HornModbusTool.datamodels.MDOParameters {
++ int startingAddress
++ MDOArea mdoArea
++ InterpretationBitSize elementBitSize
++ InterpretationType elementType
++ boolean elementsReversed
++ boolean registersSwapped
++ boolean equals(Object)
+}
+class com.basisdas.HornModbusTool.datamodels.ModbusDataObject {
+- String name
+- MDOParameters params
+- String Value
++ MDOParameters getParams()
++ void setParams(MDOParameters)
++ void setValue(String)
++ String getValue()
++ String getName()
++ void setName(String)
+}
+class com.basisdas.HornModbusTool.datamodels.TransactionObject {
++ boolean isReadTransaction
++ int slaveID
++ MDOParameters parameters
++ MDODataContainer container
++ TransactionException exception
+}
+class com.basisdas.HornModbusTool.datamodels.utils.MDOInterpreter {
++ MDODataContainer fromStringValue(MDOParameters,String)
++ String toStringValue(MDOParameters,MDODataContainer)
+}
+class com.basisdas.HornModbusTool.datamodels.SlaveDevice {
+- int slaveID
+- String deviceName
+- ArrayList<ModbusDataObject> modbusDataObjects
++ int getSlaveID()
++ void setSlaveID(int)
++ String getDeviceName()
++ void setDeviceName(String)
++ ModbusDataObject getMDO(int)
++ int getMDOCount()
++ int indexOf(Object)
++ int deleteMDO(Object)
++ int deleteMDO(int)
++ int addMDO(ModbusDataObject)
++ int addMDO(int,ModbusDataObject)
+}
+abstract class com.basisdas.HornModbusTool.datamodels.Exceptions.TransactionException {
+}
+class com.basisdas.HornModbusTool.datamodels.SerialCommunicationDevice {
++ {static} String ACTION_USB_PERMISSION
+- SerialParameters sp
+- MBProtocolType protocol
+- Context applicationContext
+- UsbManager manager
+- UsbDevice usbDevice
+- ModbusMaster modbusMaster
+- SerialCommunicationDeviceState state
++ SerialCommunicationDeviceState getState()
++ void disconnect()
++ SerialParameters getSerialParameters()
++ MBProtocolType getMBProtocolType()
++ String getMBSerialCommunicationDeviceName()
++ {static} List<String> getAvailibleUSBSerialCommDevice(Context)
+}
+class com.basisdas.HornModbusTool.datamodels.utils.MDOParamConstructor {
+- {static} MDOParameters params
++ {static} void setMDOParameters(MDOParameters)
++ {static} MDOParameters getMDOParameters()
++ {static} MDOArea getMDOArea()
++ {static} void setMDOArea(MDOArea)
++ {static} InterpretationType getElementType()
++ {static} void setElementType(InterpretationType)
++ {static} InterpretationBitSize getElementBitSize()
++ {static} void setElementBitSize(InterpretationBitSize)
++ {static} int getStartingAddress()
++ {static} void setStartingAddress(int)
++ {static} boolean getElementsReversed()
++ {static} void setElementsReversed(boolean)
++ {static} boolean getRegistersSwapped()
++ {static} void setRegistersSwapped(boolean)
+}
+class com.basisdas.HornModbusTool.datamodels.SerialCommunicationLine {
+- SerialParameters serialParameters
+- MBProtocolType protocolType
+- ArrayList<SlaveDevice> modbusSlaveDevices
++ {static} SerialCommunicationInterface getInstance()
++ SerialParameters getSerialParameters()
++ void setSerialParameters(SerialParameters)
++ MBProtocolType getProtocolType()
++ void setProtocolType(MBProtocolType)
++ int getDevicesCount()
++ int addDevice(SlaveDevice)
++ int addDevice(int,SlaveDevice)
++ int indexOf(SlaveDevice)
++ int indexOf(int)
++ int deleteDevice(int)
++ int deleteDevice(SlaveDevice)
++ SlaveDevice getDevice(int)
+}
+class com.basisdas.HornModbusTool.datamodels.SerialCommunicationInterface.SingletonHelper {
+- {static} SerialCommunicationInterface INSTANCE
+}
+
+
+@enduml

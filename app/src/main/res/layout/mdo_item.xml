@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5sp"
+    app:cardBackgroundColor="@color/mdo_background_color"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
+
+
+        <LinearLayout
+            android:id="@+id/headLinearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.basisdas.hornModbusTool.views.custom.EntityStateButton
+                android:id="@+id/button_mdo_state"
+                android:layout_width="20sp"
+                android:layout_height="20sp"
+                android:layout_margin="5sp" />
+
+            <TextView
+                android:id="@+id/text_view_mdo_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="Текущий тангаж: 90"
+                android:textColor="@color/text_block_color"
+                android:textSize="16sp" />
+
+            <com.basisdas.hornModbusTool.views.custom.ExpandButton
+                android:id="@+id/button_expand_mdo"
+                android:layout_width="20sp"
+                android:layout_height="match_parent"
+                android:layout_margin="5sp"
+                android:tint="@color/buttons_color"
+                app:inflateState="deflated"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_mdo_expanding_area"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/headLinearLayout1">
+
+            <TextView
+                android:id="@+id/text_view_mdo_parameters_block"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="50sp"
+                android:layout_marginVertical="10sp"
+                android:text="Пространство: Holding registers Начальный адрес: 2345 Тип значения: Float Битовый размер: 32"
+                android:textColor="@color/text_block_color" />
+
+            <TextView
+                android:id="@+id/text_view_mdo_errors_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="50sp"
+                android:layout_marginVertical="10sp"
+                android:text="Ошибка!Ошибка!Ошибка!Ошибка!"
+                android:textColor="@color/text_block_color" />
+
+            <com.basisdas.hornModbusTool.views.custom.CircleButton
+                android:id="@+id/button_delete_mdo"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10sp"
+                android:src="@drawable/baseline_close_48"
+                android:tint="@color/buttons_color" />
+
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
