@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.basisdas.hornModbusTool.R;
@@ -16,7 +18,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity
 	{
 
-	@BindView(R.id.viewPager) ViewPager2 viewPager;
+	@BindView(R.id.viewPager)
+	ViewPager2 viewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -25,10 +28,13 @@ public class MainActivity extends AppCompatActivity
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
-		viewPager.setAdapter( new ViewPagerFragmentStateAdapter(this.getSupportFragmentManager(), this.getLifecycle()));
-		SerialCommLineViewModel viewModel = new ViewModelProvider(this).get(SerialCommLineViewModel.class);
-		}
+		this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
+		viewPager.setAdapter(new ViewPagerFragmentStateAdapter(this.getSupportFragmentManager(), this.getLifecycle()));
+		SerialCommLineViewModel viewModel = new ViewModelProvider(this).get(SerialCommLineViewModel.class);
+
+		//viewModel.renewCommDevice(getApplicationContext());
+		}
 
 /*
 		MBSerialSlaveDevice device = new MBSerialSlaveDevice();
@@ -139,8 +145,6 @@ public class MainActivity extends AppCompatActivity
 				}
 
  */
-
-
 
 
 	}

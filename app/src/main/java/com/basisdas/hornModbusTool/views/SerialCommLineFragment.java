@@ -144,7 +144,8 @@ public class SerialCommLineFragment extends Fragment
 		mdo.setValue("57.47");
 		device.addMDO(mdo);
 
-		pool.addDevice(device);
+		//pool.addDevice(device);
+
 
 
 

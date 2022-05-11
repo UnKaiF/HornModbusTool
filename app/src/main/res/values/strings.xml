@@ -7,7 +7,9 @@
     <string name="string_main_title">Устройства</string>
 
     <string name="string_save_log">Сохранить журнал</string>
-    <string name="string_load_log">Загрузить журнил</string>
+    <string name="string_load_log">Загрузить журнал</string>
+    <string name="string_support_log">Получить техническую поддержку</string>
+    <string name="string_help_log">Справка</string>
 
     <string name="string_save_device_map">Сохранить карту</string>
     <string name="string_load_device_map">Загрузить карту</string>
@@ -18,5 +20,16 @@
     <string name="string_auto_query">Автоматический опрос</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="dialog_hint_file_name">Enter file name</string>
+
+    <string name="error_invalid_file_name">Invalid file name</string>
+    <string name="error_empty_field">This field is required</string>
+
+    <string name="menu_item_save">Save</string>
+    <string name="confirm_overwrite_file">Overwrite the file?</string>
+    <string name="label_button_overwrite">Overwrite</string>
+    <string name="label_button_cancel">Cancel</string>
+
 
 </resources>

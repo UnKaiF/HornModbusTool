@@ -5,10 +5,20 @@
         android:title="@string/string_load_log"
         android:icon="@drawable/baseline_file_download_48"
         android:orderInCategory="1"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item android:id="@+id/menu_save_log"
         android:title="@string/string_save_log"
         android:icon="@drawable/baseline_file_upload_48"
         android:orderInCategory="2"
+        app:showAsAction="always" />
+    <item android:id="@+id/menu_support_log"
+        android:title="@string/string_support_log"
+        android:icon="@drawable/support_48px"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_help_log"
+        android:title="@string/string_help_log"
+        android:icon="@drawable/help_48px"
+        android:orderInCategory="4"
         app:showAsAction="ifRoom" />
 </menu>
