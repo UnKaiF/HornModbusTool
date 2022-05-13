@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/dialog_save_file_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolBarStyle"
+        app:navigationIcon="@drawable/baseline_close_48"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="?attr/colorPrimaryVariant"
+        android:theme="@style/Theme.HornModbusTool"
+        android:padding="20sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Битовая скорость:"
+                android:padding="16sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/baudrate_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Бит данных:"
+                android:padding="16sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/data_bits_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Стоп бит:"
+                android:padding="16sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/stop_bit_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Бит чётности:"
+                android:padding="16sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"
+                />
+
+            <Spinner
+                android:id="@+id/parity_bit_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

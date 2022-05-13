@@ -21,15 +21,29 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <string name="dialog_hint_file_name">Enter file name</string>
+    <string name="dialog_hint_file_name">Введите имя файла (расширение не требуется)</string>
 
     <string name="error_invalid_file_name">Invalid file name</string>
     <string name="error_empty_field">This field is required</string>
 
-    <string name="menu_item_save">Save</string>
-    <string name="confirm_overwrite_file">Overwrite the file?</string>
-    <string name="label_button_overwrite">Overwrite</string>
-    <string name="label_button_cancel">Cancel</string>
+    <string name="menu_item_save">Сохранить</string>
+    <string name="confirm_overwrite_file">Перезаписать файл ?</string>
+    <string name="label_button_overwrite">Перезаписать</string>
+    <string name="label_button_cancel">Отмена</string>
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
 
 </resources>

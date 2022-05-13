@@ -2,7 +2,9 @@ package com.basisdas.filedialogs;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -48,6 +50,7 @@ public abstract class FileDialog extends DialogFragment implements FileListAdapt
 	protected ProgressBar mProgress;
 	protected RecyclerView mRecyclerView;
 	protected int mIconColor;
+	protected int mToolbarTitleColor;
 
 	private UpdateFilesTask mUpdateFilesTask;
 	protected String mExtension;
@@ -60,22 +63,14 @@ public abstract class FileDialog extends DialogFragment implements FileListAdapt
 		{
 
 		super.onAttach(activity);
-
-		int[] iconColorAttr = new int[]{R.attr.file_dialog_toolbar_icons_color};
-		int indexOfAttrIconColor = 0;
-		TypedValue typedValue = new TypedValue();
-		TypedArray a = activity.obtainStyledAttributes(typedValue.data, iconColorAttr);
-		mIconColor = a.getColor(indexOfAttrIconColor, Color.WHITE);
-		a.recycle();
+		mToolbarTitleColor = activity.getApplicationContext().getColor(R.color.white);
+		mIconColor = activity.getApplicationContext().getColor(R.color.menu_text_color);
 		}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
 							 @Nullable Bundle savedInstanceState)
 		{
-
-//        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-
 		return inflater.inflate(getLayoutResourceId(), container);
 		}
 
@@ -85,6 +80,7 @@ public abstract class FileDialog extends DialogFragment implements FileListAdapt
 
 		super.onViewCreated(view, savedInstanceState);
 
+		mToolbar.setTitleTextColor(mToolbarTitleColor);
 
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener()
 			{

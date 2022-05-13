@@ -4,17 +4,24 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.basisdas.filedialogs.FileDialog;
+import com.basisdas.filedialogs.OpenFileDialog;
+import com.basisdas.filedialogs.SaveFileDialog;
 import com.basisdas.hornModbusTool.R;
 import com.basisdas.hornModbusTool.datamodels.Enums.InterpretationType;
 import com.basisdas.hornModbusTool.datamodels.SlaveDevice;
@@ -24,8 +31,10 @@ import com.basisdas.hornModbusTool.datamodels.utils.MDOParamConstructor;
 import com.basisdas.hornModbusTool.datamodels.MDOParameters;
 import com.basisdas.hornModbusTool.datamodels.ModbusDataObject;
 import com.basisdas.hornModbusTool.misc.InflateState;
-import com.basisdas.hornModbusTool.viewmodels.SerialCommLineViewModel;
 import com.basisdas.hornModbusTool.views.custom.ExpandButton;
+import com.basisdas.jlibmodbusandroid.serial.SerialParameters;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,13 +44,20 @@ import butterknife.ButterKnife;
  * Use the {@link SerialCommLineFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SerialCommLineFragment extends Fragment
+public class SerialCommLineFragment extends Fragment implements
+		Toolbar.OnMenuItemClickListener,
+		TimesDialog.OnTimesUpdatedListener,
+		FileDialog.OnFileSelectedListener,
+		SerialParametersDialog.SerialParametersUpdateListener
 	{
 
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
+
+	private int mPeriod = 1000;
+	private int mTimeout = 5000;
 
 	// TODO: Rename and change types of parameters
 	private String mParam1;
@@ -102,10 +118,83 @@ public class SerialCommLineFragment extends Fragment
 		}
 
 	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater)
+		{
+		inflater.inflate(R.menu.menu_main, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+		}
+
+	@Override
 	public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
 		{
 		super.onViewCreated(view, savedInstanceState);
 		toolbar.inflateMenu(R.menu.menu_main);
+		toolbar.setOnMenuItemClickListener(this);
+		}
+
+	@Override
+	public boolean onMenuItemClick(MenuItem item)
+		{
+		switch (item.getItemId())
+			{
+			case R.id.menu_settings:
+				Bundle args = new Bundle();
+				TimesDialog dialog = new TimesDialog();
+				args.putInt(TimesDialog.CURRENT_PERIOD, mPeriod);
+				args.putInt(TimesDialog.CURRENT_TIMEOUT, mTimeout);
+				dialog.setArguments(args);
+				dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+				dialog.show(getChildFragmentManager(), TimesDialog.class.getName());
+				break;
+			case R.id.menu_auto_query:
+				Bundle margs = new Bundle();
+				SerialParametersDialog spDialog = new SerialParametersDialog();
+				spDialog.setArguments(margs);
+				spDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+				spDialog.show(getChildFragmentManager(), SerialParametersDialog.class.getName());
+				break;
+			case R.id.menu_load_map:
+				showFileDialog(new OpenFileDialog(), OpenFileDialog.class.getName());
+				break;
+			case R.id.menu_save_map:
+				showFileDialog(new SaveFileDialog(), OpenFileDialog.class.getName());
+				break;
+			}
+		return false;
+		}
+
+	private void showFileDialog(FileDialog dialog, String tag)
+		{
+		Bundle args = new Bundle();
+		args.putString(FileDialog.EXTENSION, "mdojson");
+		dialog.setArguments(args);
+		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+		dialog.show(getChildFragmentManager(), tag);
+		}
+
+	@Override
+	public void onTimesUpdated(int period, int timeout)
+		{
+		mPeriod = period;
+		mTimeout = timeout;
+		}
+
+
+	@Override
+	public void onFileSelected(FileDialog dialog, File file)
+		{
+		if (dialog.getClass().getName().equalsIgnoreCase(OpenFileDialog.class.getName()))
+			{
+			}
+		else
+			{
+			}
+		}
+
+	@Override
+	public void onSerialParametersUpdated(SerialParameters sp)
+		{
+
 		}
 
 	private void Some()

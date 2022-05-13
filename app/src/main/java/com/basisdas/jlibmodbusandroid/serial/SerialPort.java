@@ -1,5 +1,6 @@
 package com.basisdas.jlibmodbusandroid.serial;
 
+import com.basisdas.hornModbusTool.datamodels.Enums.InterpretationBitSize;
 import com.basisdas.jlibmodbusandroid.Modbus;
 import com.basisdas.jlibmodbusandroid.net.stream.base.ModbusInputStream;
 import com.basisdas.jlibmodbusandroid.net.stream.base.ModbusOutputStream;
@@ -129,14 +130,27 @@ public abstract class SerialPort {
             throw new IllegalArgumentException("Illegal parity value:" + value);
         }
 
+        public static String[] names()
+            {
+            String[] arr = new String[Parity.values().length];
+            Parity[] paritys = Parity.values();
+            for (int i=0 ; i < arr.length; i++)
+                {
+                arr[i] = paritys[i].name();
+                }
+            return arr;
+            }
+
         public int getValue() {
             return value;
         }
 
         @Override
-        public String toString() {
-            return String.valueOf(value);
-        }
+        public String toString()
+            {
+            return this.name();
+            /*return String.valueOf(value);*/
+            }
     }
 
     public enum BaudRate {
@@ -162,6 +176,17 @@ public abstract class SerialPort {
             }
             throw new IllegalArgumentException("Illegal baud rate value:" + value);
         }
+
+        public static String[] names()
+            {
+            String[] arr = new String[BaudRate.values().length];
+            BaudRate[] baudRates = BaudRate.values();
+            for (int i=0 ; i < arr.length; i++)
+                {
+                arr[i] = baudRates[i].toString();
+                }
+            return arr;
+            }
 
         public int getValue() {
             return value;

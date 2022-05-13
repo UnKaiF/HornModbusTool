@@ -4,9 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,7 +15,6 @@ import android.widget.ProgressBar;
 
 import com.basisdas.hornModbusTool.R;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textview.MaterialTextView;
 
 import java.io.File;
 
@@ -47,7 +45,7 @@ public class SaveFileDialog extends FileDialog implements Toolbar.OnMenuItemClic
 
 		mFileNameText = (TextInputEditText) view.findViewById(R.id.dialog_save_file_et_filename);
 
-		mToolbar.inflateMenu(R.menu.dialog_save);
+		mToolbar.inflateMenu(R.menu.toolbar_menu_apply);
 		mToolbar.getMenu().findItem(R.id.menu_apply).getIcon().setColorFilter(mIconColor, PorterDuff.Mode.SRC_IN);
 		mToolbar.setOnMenuItemClickListener(this);
 

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/dialog_save_file_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolBarStyle"
+        app:navigationIcon="@drawable/baseline_close_48"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="?attr/colorPrimaryVariant"
+        android:theme="@style/Theme.HornModbusTool"
+        android:padding="20sp">
+
+        <TextView
+            android:id="@+id/timeout_dialog_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Таймаут ответа, мс"
+            android:padding="20sp"
+            android:textSize="16sp"
+            android:textColor="@color/text_block_color"/>
+
+        <SeekBar
+            android:id="@+id/timeout_dialog_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20sp"
+            android:max="5000"
+            android:min="1000"
+            android:progress="5000"/>
+
+        <TextView
+            android:id="@+id/period_dialog_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Интервал опроса, мс"
+            android:padding="20sp"
+            android:textSize="16sp"
+            android:textColor="@color/text_block_color"/>
+
+        <SeekBar
+            android:id="@+id/period_dialog_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20sp"
+            android:max="5000"
+            android:min="200"
+            android:progress="1000"/>
+
+    </LinearLayout>
+
+</LinearLayout>

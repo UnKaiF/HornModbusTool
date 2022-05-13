@@ -12,13 +12,14 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
+        android:theme="@style/ToolBarStyle"
         app:navigationIcon="@drawable/baseline_close_48"/>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="?attr/colorPrimaryVariant">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dialog_save_file_rv_files"
@@ -39,7 +40,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin_default">
+        android:padding="@dimen/margin_default"
+        android:background="?attr/colorPrimaryVariant">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

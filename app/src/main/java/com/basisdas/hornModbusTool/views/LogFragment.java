@@ -38,6 +38,11 @@ import com.basisdas.jlibmodbusandroid.serial.SerialUtils;
 import com.basisdas.jlibmodbusandroid.serial.util.AndroidUSBSerialPortResolver;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -167,7 +172,7 @@ public class LogFragment extends Fragment implements Toolbar.OnMenuItemClickList
 	private void showFileDialog(FileDialog dialog, String tag)
 		{
 		Bundle args = new Bundle();
-		args.putString(FileDialog.EXTENSION, "jpg");
+		args.putString(FileDialog.EXTENSION, "log");
 		dialog.setArguments(args);
 		dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
 		dialog.show(getChildFragmentManager(), tag);
@@ -176,7 +181,40 @@ public class LogFragment extends Fragment implements Toolbar.OnMenuItemClickList
 	@Override
 	public void onFileSelected(FileDialog dialog, File file)
 		{
-		appendMemoLine(file.getName());
+		if (dialog.getClass().getName().equalsIgnoreCase(OpenFileDialog.class.getName()))
+			{
+			memo.setText("");
+			try
+				{
+				appendMemoLine(new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())), StandardCharsets.UTF_8));
+				}
+			catch (IOException e)
+				{
+				appendMemoLine("Не могу открыть файл\"" + file.getAbsolutePath() + "\"");
+				appendMemoLine(e.getMessage());
+				}
+			}
+		else
+			{
+			PrintWriter out = null;
+			try
+				{
+				out = new PrintWriter(file.getAbsolutePath());
+				out.println(memo.getText().toString());
+				}
+			catch (IOException e)
+				{
+				appendMemoLine("Не могу открыть файл\"" + file.getAbsolutePath() + "\"");
+				appendMemoLine(e.getMessage());
+				}
+			finally
+				{
+				if (out != null)
+					out.close();
+				}
+
+			}
+
 		//Toast.makeText(this, getString(R.string.toast_file_selected, file.getName()), Toast.LENGTH_LONG).show();
 		}
 
