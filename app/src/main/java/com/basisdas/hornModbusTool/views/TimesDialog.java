@@ -24,6 +24,10 @@ public class TimesDialog extends DialogFragment implements Toolbar.OnMenuItemCli
 	public static final String CURRENT_TIMEOUT = "current_timeout";
 	public static final String CURRENT_PERIOD = "current_period";
 
+	public static final String TITLE = "TITLE";
+	private String mTitle = "";
+	private int mToolbarTitleColor;
+
 	private Toolbar mToolbar;
 	private TextView mPeriodHeaderTV, mTimeoutHeaderTV;
 	private SeekBar mPeriodSeekBar, mTimeoutSeekBar;
@@ -36,6 +40,13 @@ public class TimesDialog extends DialogFragment implements Toolbar.OnMenuItemCli
 		return R.layout.dialog_times_settings;
 		}
 
+	@Override
+	public void onAttach(Activity activity)
+		{
+
+		super.onAttach(activity);
+		mToolbarTitleColor = activity.getApplicationContext().getColor(R.color.white);
+		}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -55,6 +66,7 @@ public class TimesDialog extends DialogFragment implements Toolbar.OnMenuItemCli
 			{
 			mTimeout = savedInstanceState.getInt(CURRENT_TIMEOUT, 5000);
 			mPeriod = savedInstanceState.getInt(CURRENT_PERIOD, 1000);
+			mTitle = savedInstanceState.getString(TITLE);
 			}
 		else
 			{
@@ -64,12 +76,17 @@ public class TimesDialog extends DialogFragment implements Toolbar.OnMenuItemCli
 					mTimeout = arguments.getInt(CURRENT_TIMEOUT);
 				if (arguments.containsKey(CURRENT_PERIOD))
 					mPeriod = arguments.getInt(CURRENT_PERIOD);
+				if (arguments.containsKey(TITLE))
+					mTitle = getArguments().getString(TITLE);
 				}
 			}
 
 		mToolbar = (Toolbar) view.findViewById(R.id.dialog_save_file_toolbar);
 		mToolbar.inflateMenu(R.menu.toolbar_menu_apply);
 		mToolbar.setOnMenuItemClickListener(this);
+		mToolbar.setTitleTextColor(mToolbarTitleColor);
+		mToolbar.setTitle(mTitle);
+
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener()
 			{
 				@Override
@@ -122,6 +139,7 @@ public class TimesDialog extends DialogFragment implements Toolbar.OnMenuItemCli
 		super.onSaveInstanceState(outState);
 		outState.putInt(CURRENT_TIMEOUT, mTimeout);
 		outState.putInt(CURRENT_PERIOD, mPeriod);
+		outState.putString(TITLE, mTitle);
 		}
 
 	protected void sendResult(int period, int timeout)

@@ -48,7 +48,10 @@ public class SerialCommLineFragment extends Fragment implements
 		Toolbar.OnMenuItemClickListener,
 		TimesDialog.OnTimesUpdatedListener,
 		FileDialog.OnFileSelectedListener,
-		SerialParametersDialog.SerialParametersUpdateListener
+		SerialParametersDialog.SerialParametersUpdateListener,
+		MBDeviceParametersDialog.MBDeviceParametersUpatedListener,
+		MDOValueUpdateDialog.MDOValueUpdateListener,
+		MDOConstructorDialog.MDOConstructorDoneListener
 	{
 
 	// TODO: Rename parameter arguments, choose names that match
@@ -135,10 +138,10 @@ public class SerialCommLineFragment extends Fragment implements
 	@Override
 	public boolean onMenuItemClick(MenuItem item)
 		{
+		Bundle args = new Bundle();
 		switch (item.getItemId())
 			{
 			case R.id.menu_settings:
-				Bundle args = new Bundle();
 				TimesDialog dialog = new TimesDialog();
 				args.putInt(TimesDialog.CURRENT_PERIOD, mPeriod);
 				args.putInt(TimesDialog.CURRENT_TIMEOUT, mTimeout);
@@ -147,11 +150,33 @@ public class SerialCommLineFragment extends Fragment implements
 				dialog.show(getChildFragmentManager(), TimesDialog.class.getName());
 				break;
 			case R.id.menu_auto_query:
-				Bundle margs = new Bundle();
+/*
+				args.putString("TITLE","Параметры коммуникации");
 				SerialParametersDialog spDialog = new SerialParametersDialog();
-				spDialog.setArguments(margs);
+				spDialog.setArguments(args);
 				spDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
 				spDialog.show(getChildFragmentManager(), SerialParametersDialog.class.getName());
+*/
+/*
+				args.putString("TITLE", "Новое устройство");
+				MBDeviceParametersDialog mbDialog = new MBDeviceParametersDialog();
+				mbDialog.setArguments(args);
+				mbDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+				mbDialog.show(getChildFragmentManager(), MBDeviceParametersDialog.class.getName());
+*/
+				args.putString("TITLE", "Запись ОДМ !");
+				MDOValueUpdateDialog mbDialog = new MDOValueUpdateDialog();
+				mbDialog.setArguments(args);
+				mbDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+				mbDialog.show(getChildFragmentManager(), MDOValueUpdateDialog.class.getName());
+
+				break;
+			case R.id.menu_deflate_all:
+				args.putString("TITLE", "Новый ОДМ");
+				MDOConstructorDialog mdoDialog = new MDOConstructorDialog();
+				mdoDialog.setArguments(args);
+				mdoDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+				mdoDialog.show(getChildFragmentManager(), MDOConstructorDialog.class.getName());
 				break;
 			case R.id.menu_load_map:
 				showFileDialog(new OpenFileDialog(), OpenFileDialog.class.getName());
@@ -193,6 +218,24 @@ public class SerialCommLineFragment extends Fragment implements
 
 	@Override
 	public void onSerialParametersUpdated(SerialParameters sp)
+		{
+
+		}
+
+	@Override
+	public void onMBDeviceParametersUpdated(String deviceName, int deviceId)
+		{
+
+		}
+
+	@Override
+	public void onMDOValueUpdated(ModbusDataObject mdo, String value)
+		{
+
+		}
+
+	@Override
+	public void onMDOConstructed(ModbusDataObject mdo)
 		{
 
 		}

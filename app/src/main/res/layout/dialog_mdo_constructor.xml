@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/dialog_save_file_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolBarStyle"
+        app:navigationIcon="@drawable/baseline_close_48"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="?attr/colorPrimaryVariant"
+        android:theme="@style/Theme.HornModbusTool"
+        android:padding="20sp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/mdo_name_hint"
+            app:boxBackgroundColor="@color/serial_device_background_color">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialog_mdo_name_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:textColor="@color/text_block_color"
+                android:textSize="20sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="12sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/mdo_starting_address_hint"
+            app:boxBackgroundColor="@color/serial_device_background_color">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialog_mdo_starting_address_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:textColor="@color/text_block_color"
+                android:textSize="20sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="12sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Функция:"
+                android:padding="10sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/mdo_area_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Тип интерпретации:"
+                android:padding="10sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/mdo_interpretation_type_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Битовый размер:"
+                android:padding="10sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"/>
+
+            <Spinner
+                android:id="@+id/mdo_bit_size_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Обратный порядок элементов:"
+                android:padding="10sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"
+                />
+
+            <Spinner
+                android:id="@+id/mdo_element_order_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Обратный порядок регистров:"
+                android:padding="10sp"
+                android:textSize="16sp"
+                android:textColor="@color/text_block_color"
+                android:layout_weight="1"
+                />
+
+            <Spinner
+                android:id="@+id/mdo_registers_order_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="16sp"
+                android:backgroundTint="@color/buttons_color"/>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

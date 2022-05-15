@@ -26,6 +26,11 @@ public class SerialParametersDialog extends DialogFragment implements Toolbar.On
 	{
 
 	public static final String SERIAL_PARAMETERS = "serial_parameters";
+
+	public static final String TITLE = "TITLE";
+	private String mTitle = "";
+	private int mToolbarTitleColor;
+
 	protected Toolbar mToolbar;
 	private SerialParameters mSp;
 	private static final Integer databits[] = {7, 8};
@@ -35,6 +40,14 @@ public class SerialParametersDialog extends DialogFragment implements Toolbar.On
 	protected int getLayoutResourceId()
 		{
 		return R.layout.dialog_serial_parameters;
+		}
+
+	@Override
+	public void onAttach(Activity activity)
+		{
+
+		super.onAttach(activity);
+		mToolbarTitleColor = activity.getApplicationContext().getColor(R.color.white);
 		}
 
 
@@ -57,11 +70,14 @@ public class SerialParametersDialog extends DialogFragment implements Toolbar.On
 		if (savedInstanceState != null)
 			{
 			json = savedInstanceState.getString(SERIAL_PARAMETERS);
+			mTitle = savedInstanceState.getString(TITLE);
 			}
 		else
 			{
 			if (arguments != null && arguments.containsKey(SERIAL_PARAMETERS))
 					json = arguments.getString(SERIAL_PARAMETERS);
+			if (arguments.containsKey(TITLE))
+				mTitle = getArguments().getString(TITLE);
 			}
 
 		if (json != null)
@@ -99,6 +115,9 @@ public class SerialParametersDialog extends DialogFragment implements Toolbar.On
 		mToolbar = (Toolbar) view.findViewById(R.id.dialog_save_file_toolbar);
 		mToolbar.inflateMenu(R.menu.toolbar_menu_apply);
 		mToolbar.setOnMenuItemClickListener(this);
+		mToolbar.setTitleTextColor(mToolbarTitleColor);
+		mToolbar.setTitle(mTitle);
+
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener()
 			{
 				@Override
@@ -117,6 +136,7 @@ public class SerialParametersDialog extends DialogFragment implements Toolbar.On
 		super.onSaveInstanceState(outState);
 		String json = JsonParser.getGsonParser().toJson(mSp);
 		outState.putString(SERIAL_PARAMETERS, json);
+		outState.putString(TITLE, mTitle);
 		}
 
 	protected void sendResult()

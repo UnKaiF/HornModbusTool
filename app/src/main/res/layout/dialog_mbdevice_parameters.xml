@@ -15,42 +15,22 @@
         android:theme="@style/ToolBarStyle"
         app:navigationIcon="@drawable/baseline_close_48"/>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="?attr/colorPrimaryVariant">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dialog_save_file_rv_files"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/margin_half"
-            android:paddingTop="@dimen/margin_half"
-            android:scrollbars="vertical" />
-
-        <ProgressBar
-            android:id="@+id/dialog_save_file_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/margin_default"
-        android:background="?attr/colorPrimaryVariant">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="?attr/colorPrimaryVariant"
+        android:theme="@style/Theme.HornModbusTool"
+        android:padding="20sp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/dialog_hint_file_name"
+            android:hint="@string/mb_device_name"
             app:boxBackgroundColor="@color/serial_device_background_color">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/dialog_save_file_et_filename"
+                android:id="@+id/dialog_mbdevice_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -58,7 +38,26 @@
                 android:textSize="20sp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-    </FrameLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="12sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/mb_device_id"
+            app:boxBackgroundColor="@color/serial_device_background_color">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialog_mbdevice_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:textColor="@color/text_block_color"
+                android:textSize="20sp"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
 
 </LinearLayout>
