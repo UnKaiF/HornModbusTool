@@ -27,7 +27,6 @@ public class ModbusDataObject
 		this.params = params;
 		}
 
-
 	public void setValue(String newValue)
 		{
 		this.Value = newValue;

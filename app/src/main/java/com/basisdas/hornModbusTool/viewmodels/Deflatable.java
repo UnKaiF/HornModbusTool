@@ -1,5 +1,9 @@
 package com.basisdas.hornModbusTool.viewmodels;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 
 import com.basisdas.hornModbusTool.misc.EntityState;
@@ -12,6 +16,7 @@ abstract public class Deflatable extends ViewModel
 	protected InflateState inflateState = InflateState.DEFLATED;
 	protected EntityState state = EntityState.ACTIVE;
 	protected EntitySubState subState = EntitySubState.UNKNOWN;
+
 
 	abstract protected void deflateChilds();
 
@@ -35,6 +40,8 @@ abstract public class Deflatable extends ViewModel
 		{
 		return this.inflateState;
 		}
+
+	public void setInflateState(InflateState inflateState) {this.inflateState = inflateState;}
 
 	public EntityState getState()
 		{

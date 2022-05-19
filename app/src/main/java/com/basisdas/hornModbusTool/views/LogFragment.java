@@ -23,9 +23,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import com.basisdas.filedialogs.FileDialog;
-import com.basisdas.filedialogs.OpenFileDialog;
-import com.basisdas.filedialogs.SaveFileDialog;
+import com.basisdas.hornModbusTool.filedialogs.FileDialog;
+import com.basisdas.hornModbusTool.filedialogs.OpenFileDialog;
+import com.basisdas.hornModbusTool.filedialogs.SaveFileDialog;
 import com.basisdas.hornModbusTool.R;
 import com.basisdas.jlibmodbusandroid.exception.ModbusIOException;
 import com.basisdas.jlibmodbusandroid.master.ModbusMaster;
@@ -33,7 +33,6 @@ import com.basisdas.jlibmodbusandroid.master.ModbusMasterFactory;
 import com.basisdas.jlibmodbusandroid.serial.SerialParameters;
 import com.basisdas.jlibmodbusandroid.serial.SerialPort;
 import com.basisdas.jlibmodbusandroid.serial.SerialPortFactoryUSBSerialAndroid;
-import com.basisdas.jlibmodbusandroid.serial.SerialPortUSBSerialAndroid;
 import com.basisdas.jlibmodbusandroid.serial.SerialUtils;
 import com.basisdas.jlibmodbusandroid.serial.util.AndroidUSBSerialPortResolver;
 
@@ -214,8 +213,6 @@ public class LogFragment extends Fragment implements Toolbar.OnMenuItemClickList
 				}
 
 			}
-
-		//Toast.makeText(this, getString(R.string.toast_file_selected, file.getName()), Toast.LENGTH_LONG).show();
 		}
 
 

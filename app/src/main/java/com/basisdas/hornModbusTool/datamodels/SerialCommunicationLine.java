@@ -1,19 +1,24 @@
 package com.basisdas.hornModbusTool.datamodels;
 
+import android.content.Context;
+
 import androidx.annotation.Nullable;
 
+import com.basisdas.hornModbusTool.misc.EntityState;
+import com.basisdas.hornModbusTool.misc.EntitySubState;
 import com.basisdas.jlibmodbusandroid.serial.SerialParameters;
 import com.basisdas.jlibmodbusandroid.serial.SerialPort;
 import com.basisdas.hornModbusTool.datamodels.Enums.MBProtocolType;
+import com.basisdas.jlibmodbusandroid.serial.util.AndroidUSBSerialPortResolver;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SerialCommunicationLine
 	{
 
 	private SerialParameters serialParameters;
-	private MBProtocolType protocolType;
-	private final ArrayList<SlaveDevice> modbusSlaveDevices;
+	private int currentUSBSerialDeviceIndex = 0;
 
 	private static class SingletonHelper
 		{
@@ -32,8 +37,6 @@ public class SerialCommunicationLine
 												8, //Data bits
 												1, //Stop bits
 												SerialPort.Parity.NONE );
-		protocolType = MBProtocolType.RTU;
-		modbusSlaveDevices = new ArrayList<SlaveDevice>();
 		}
 
 	public SerialParameters getSerialParameters()
@@ -46,78 +49,21 @@ public class SerialCommunicationLine
 		this.serialParameters = serialParameters;
 		}
 
-	public MBProtocolType getProtocolType()
+	public boolean renewCommDevice(Context context)
 		{
-		return protocolType;
-		}
-
-	public void setProtocolType(MBProtocolType protocolType)
-		{
-		this.protocolType = protocolType;
-		}
-
-	public int getDevicesCount()
-		{
-		return modbusSlaveDevices.size();
-		}
-
-
-	public int addDevice(SlaveDevice slaveDevice)
-		{
-		if (indexOf(slaveDevice) == -1)
+		List<String> devices = AndroidUSBSerialPortResolver.getAvailiblePortIdentifiers(context);
+		if (devices.isEmpty())
 			{
-			modbusSlaveDevices.add(slaveDevice);
-			return modbusSlaveDevices.size() - 1;
+			serialParameters.setDevice("Нет подходящего интерфейса");
+			return false;
 			}
-		return -1;
+		if (++currentUSBSerialDeviceIndex > (devices.size() - 1))
+			currentUSBSerialDeviceIndex = 0;
+		serialParameters.setDevice(devices.get(currentUSBSerialDeviceIndex));
+		//TODO: call Recreate Modbus Master method
+		return true;
 		}
 
-	public int addDevice(int index, SlaveDevice slaveDevice)
-		{
-		if (indexOf(slaveDevice) == -1)
-			{
-			modbusSlaveDevices.add(index, slaveDevice);
-			return index;
-			}
-		return -1;
-		}
-
-
-	public int indexOf(@Nullable SlaveDevice device)
-		{
-		if (device == null)
-			return -1;
-		return indexOf(device.getSlaveID());
-		}
-
-	public int indexOf(int slaveID)
-		{
-		for (int i = 0; i < modbusSlaveDevices.size(); i++)
-			{
-			if (modbusSlaveDevices.get(i).getSlaveID() == slaveID)
-				return i;
-			}
-		return -1;
-		}
-
-
-	public int deleteDevice(int slaveID)
-		{
-		int index = indexOf(slaveID);
-		modbusSlaveDevices.remove(index);
-		return index;
-		}
-
-	public int deleteDevice(SlaveDevice slaveDevice)
-		{
-		return deleteDevice(slaveDevice.getSlaveID());
-		}
-
-
-	public SlaveDevice getDevice(int index)
-		{
-		return modbusSlaveDevices.get(index);
-		}
 
 
 	}

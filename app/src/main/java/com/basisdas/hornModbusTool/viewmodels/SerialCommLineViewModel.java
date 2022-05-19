@@ -1,10 +1,14 @@
 package com.basisdas.hornModbusTool.viewmodels;
 
+import android.app.Application;
 import android.content.Context;
 
 
-import com.basisdas.hornModbusTool.datamodels.Enums.MBProtocolType;
-import com.basisdas.hornModbusTool.datamodels.SerialCommunicationLine;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+
+import com.basisdas.hornModbusTool.datamodels.*;
 import com.basisdas.hornModbusTool.datamodels.TransactionObject;
 import com.basisdas.hornModbusTool.misc.EntityState;
 import com.basisdas.hornModbusTool.misc.EntitySubState;
@@ -17,9 +21,7 @@ import java.util.List;
 public class SerialCommLineViewModel extends Deflatable implements ITransactionFlowNode
 	{
 
-	private final ArrayList<SlaveDeviceViewModel> slaveDeviceViewModels;
-
-
+	public final ArrayList<SlaveDeviceViewModel> slaveDeviceViewModels;
 	private final SerialCommunicationLine serialCommunicationLine;
 
 	public SerialCommLineViewModel()
@@ -31,47 +33,96 @@ public class SerialCommLineViewModel extends Deflatable implements ITransactionF
 	public String getCommDevicePath()
 		{
 		String fullPath = serialCommunicationLine.getSerialParameters().getDevice();
-		if (fullPath == null) return "";
+		if (fullPath == null) return "?";
 		return fullPath;
 		}
 
-	public void setCommDevicePath(String commDevicePath)
-		{
-		SerialParameters s = serialCommunicationLine.getSerialParameters();
-		s.setDevice(commDevicePath);
-		serialCommunicationLine.setSerialParameters(s);
-		}
 
-	public String getCommDeviceParameters()
+	public String getCommDeviceParametersString()
 		{
 		return serialCommunicationLine.getSerialParameters().getParametersString() +
-								 "\r\n" +
-				serialCommunicationLine.getProtocolType().name();
+								 "\r\n";
 		}
 
-	public void setCommDeviceParameters(SerialParameters sp, MBProtocolType protocol)
+	public SerialParameters getCommDeviceParameters()
+		{
+		return serialCommunicationLine.getSerialParameters();
+		}
+
+	public void setCommDeviceParameters(SerialParameters sp)
 		{
 		sp.setDevice(serialCommunicationLine.getSerialParameters().getDevice());
 		serialCommunicationLine.setSerialParameters(sp);
-		serialCommunicationLine.setProtocolType(protocol);
 		}
 
 	public void renewCommDevice(Context context)
 		{
-		List<String> devices = AndroidUSBSerialPortResolver.getAvailiblePortIdentifiers(context);
-		if (devices.isEmpty())
+		if (serialCommunicationLine.renewCommDevice(context))
 			{
-			setCommDevicePath("Нет подходящего интерфейса");
-			setState(EntityState.INACTIVE);
-			}
-		else
-			{
-			setCommDevicePath(devices.get(0));
-			//TODO: message to communication thread to establish parameters
 			setEntitySubState(EntitySubState.UNKNOWN);
 			setState(EntityState.ACTIVE);
 			}
+		else
+			{
+			setState(EntityState.INACTIVE);
+			}
 		}
+
+
+/*
+	public int addDevice(SlaveDeviceViewModel slaveDeviceViewModel)
+		{
+		if (indexOf(slaveDeviceViewModel) == -1)
+			{
+			slaveDeviceViewModels.add(slaveDeviceViewModel);
+			return slaveDeviceViewModels.size() - 1;
+			}
+		return -1;
+		}
+
+	public int addDevice(int index, SlaveDeviceViewModel slaveDeviceViewModel)
+		{
+		if (indexOf(slaveDeviceViewModel) == -1)
+			{
+			slaveDeviceViewModels.add(index, slaveDeviceViewModel);
+			return index;
+			}
+		return -1;
+		}
+
+
+	public int indexOf(@Nullable SlaveDeviceViewModel slaveDeviceViewModel)
+		{
+		if (slaveDeviceViewModel == null)
+			return -1;
+		return indexOf(slaveDeviceViewModel.getSlaveID());
+		}
+
+	public int indexOf(int slaveID)
+		{
+		for (int i = 0; i < slaveDeviceViewModels.size(); i++)
+			{
+			if (slaveDeviceViewModels.get(i).getSlaveID() == slaveID)
+				return i;
+			}
+		return -1;
+		}
+
+
+	public int deleteDevice(int slaveID)
+		{
+		int index = indexOf(slaveID);
+		slaveDeviceViewModels.remove(index);
+		return index;
+		}
+
+	public int deleteDevice(SlaveDeviceViewModel slaveDevice)
+		{
+		return deleteDevice(slaveDevice.getSlaveID());
+		}
+
+*/
+
 
 	@Override
 	public void ariseTransaction(TransactionObject transactionObject)

@@ -1,7 +1,6 @@
 package com.basisdas.hornModbusTool.datamodels.Enums;
 
 import android.util.Range;
-
 import java.util.ArrayList;
 
 public enum InterpretationBitSize

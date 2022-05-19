@@ -1,18 +1,13 @@
-package com.basisdas.filedialogs;
+package com.basisdas.hornModbusTool.filedialogs;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +20,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.basisdas.filedialogs.utils.KeyboardUtils;
+import com.basisdas.hornModbusTool.filedialogs.utils.KeyboardUtils;
 import com.basisdas.hornModbusTool.R;
 
 import java.io.File;

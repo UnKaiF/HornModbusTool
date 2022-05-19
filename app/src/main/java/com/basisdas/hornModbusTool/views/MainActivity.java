@@ -8,7 +8,16 @@ import android.Manifest;
 import android.os.Bundle;
 
 import com.basisdas.hornModbusTool.R;
+import com.basisdas.hornModbusTool.datamodels.Enums.InterpretationType;
+import com.basisdas.hornModbusTool.datamodels.Enums.MDOArea;
+import com.basisdas.hornModbusTool.datamodels.MDOParameters;
+import com.basisdas.hornModbusTool.datamodels.ModbusDataObject;
+import com.basisdas.hornModbusTool.datamodels.SlaveDevice;
+import com.basisdas.hornModbusTool.datamodels.utils.MDOParamConstructor;
+import com.basisdas.hornModbusTool.viewmodels.JournalViewModel;
+import com.basisdas.hornModbusTool.viewmodels.ModbusDataObjectViewModel;
 import com.basisdas.hornModbusTool.viewmodels.SerialCommLineViewModel;
+import com.basisdas.hornModbusTool.viewmodels.SlaveDeviceViewModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,6 +29,8 @@ public class MainActivity extends AppCompatActivity
 	@BindView(R.id.viewPager)
 	ViewPager2 viewPager;
 
+	ViewModelProvider viewModelProvider;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 		{
@@ -27,43 +38,46 @@ public class MainActivity extends AppCompatActivity
 		setContentView(R.layout.activity_main);
 		ButterKnife.bind(this);
 
-		//Динамический запрос привелегий на дотуп к носителю
+		//Динамический запрос привелегий на доcтуп к носителю
 		this.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
 		viewPager.setAdapter(new ViewPagerFragmentStateAdapter(this.getSupportFragmentManager(), this.getLifecycle()));
-		SerialCommLineViewModel viewModel = new ViewModelProvider(this).get(SerialCommLineViewModel.class);
+		viewModelProvider = new ViewModelProvider(this);
+		initViewModels(savedInstanceState);
+		}
 
-		viewModel.renewCommDevice(getApplicationContext());
+	private void initViewModels(Bundle savedInstanceState)
+		{
+		if (savedInstanceState == null)
+			{
+			SerialCommLineViewModel serialCommLineViewModel = viewModelProvider.get(SerialCommLineViewModel.class);
+			JournalViewModel journalViewModel = viewModelProvider.get(JournalViewModel.class);
+			journalViewModel.appendLine("Из активити");
+
+			serialCommLineViewModel.slaveDeviceViewModels.add(new SlaveDeviceViewModel(serialCommLineViewModel, new SlaveDevice(0x03, "Некий Датчик")));
+			MDOParameters params = MDOParamConstructor.getMDOParameters();
+			ModbusDataObject mdo = new ModbusDataObject(params, "Тангаж");
+			mdo.setValue("21");
+			serialCommLineViewModel.slaveDeviceViewModels.get(0).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(0), mdo));
+			MDOParamConstructor.setMDOArea(MDOArea.Coil_singleWrite);
+			MDOParamConstructor.setElementType(InterpretationType.Float);
+			MDOParamConstructor.setStartingAddress(0xAAAA);
+			mdo = new ModbusDataObject(MDOParamConstructor.getMDOParameters(),  "Крен");
+			mdo.setValue("10.3");
+			serialCommLineViewModel.slaveDeviceViewModels.get(0).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(0),  mdo));
+
+			serialCommLineViewModel.slaveDeviceViewModels.add(new SlaveDeviceViewModel(serialCommLineViewModel, new SlaveDevice(99, "Адаптер ETS.USA")));
+			MDOParamConstructor.setElementType(InterpretationType.Decimal);
+			MDOParamConstructor.setMDOArea(MDOArea.HoldingRegister_singleWrite);
+			MDOParamConstructor.setStartingAddress(3);
+			mdo = new ModbusDataObject(MDOParamConstructor.getMDOParameters(),  "Контроль тока");
+			mdo.setValue("57");
+			serialCommLineViewModel.slaveDeviceViewModels.get(1).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(1), mdo));
+
+			}
 		}
 
 /*
-		MBSerialSlaveDevice device = new MBSerialSlaveDevice();
-		device.name = "Device";
-		device.slaveID = 0x02;
-
-		MDOParameters params = MDOParamConstructor.getMDOParameters();
-
-		device.addMDO(new ModbusDataObject(params,  "MDO 1"));
-
-		MDOParamConstructor.setObjectKind(MDOKind.Coil_singleWrite);
-		MDOParamConstructor.setElementType(InterpretationType.Bool);
-		MDOParamConstructor.setStartingAddress(0xAAAA);
-
-		device.addMDO(new ModbusDataObject(MDOParamConstructor.getMDOParameters(), new MDODataContainer(), "MDO 2"));
-
-
-		Gson gson = new Gson();
-		String str = gson.toJson(device);
-
-		appendMemoLine(str);
-
-		MBSerialSlaveDevice device1 =  gson.fromJson(str, MBSerialSlaveDevice.class);
-
-		appendMemoLine("device1 name: " + device1.name);
-		appendMemoLine("devive1 slave id" + device1.slaveID);
-
-
-
 
 		//fixme: usbfs: при каждом отключении и подключении устройства увеличивает номер устройства
 		List<String> ports = AndroidUSBSerialPortResolver.getAvailiblePortIdentifiers(getApplicationContext());

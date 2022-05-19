@@ -1,4 +1,4 @@
-package com.basisdas.filedialogs;
+package com.basisdas.hornModbusTool.filedialogs;
 
 import java.io.File;
 import java.io.FileFilter;

@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import com.basisdas.hornModbusTool.datamodels.Enums.InterpretationBitSize;
 import com.basisdas.hornModbusTool.datamodels.Enums.InterpretationType;
 import com.basisdas.hornModbusTool.datamodels.Enums.MDOArea;
-
 import org.jetbrains.annotations.NotNull;
 
 public class MDOParameters

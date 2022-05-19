@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import com.basisdas.filedialogs.utils.KeyboardUtils;
+import com.basisdas.hornModbusTool.filedialogs.utils.KeyboardUtils;
 import com.basisdas.hornModbusTool.R;
 
 public class MBDeviceParametersDialog extends DialogFragment implements Toolbar.OnMenuItemClickListener

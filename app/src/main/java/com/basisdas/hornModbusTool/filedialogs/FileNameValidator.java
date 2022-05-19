@@ -1,7 +1,7 @@
-package com.basisdas.filedialogs;
+package com.basisdas.hornModbusTool.filedialogs;
 
 import androidx.annotation.NonNull;
-import com.basisdas.filedialogs.utils.TextUtils;
+import com.basisdas.hornModbusTool.filedialogs.utils.TextUtils;
 
 public class FileNameValidator
 	{

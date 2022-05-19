@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.basisdas.hornModbusTool.R;
-import com.basisdas.hornModbusTool.datamodels.SlaveDevice;
-import com.basisdas.hornModbusTool.datamodels.SerialCommunicationLine;
+import com.basisdas.hornModbusTool.misc.EntityState;
 import com.basisdas.hornModbusTool.misc.InflateState;
-import com.basisdas.hornModbusTool.views.custom.ExpandButton;
+import com.basisdas.hornModbusTool.viewmodels.SerialCommLineViewModel;
+import com.basisdas.hornModbusTool.viewmodels.SlaveDeviceViewModel;
 
-public class MBSlaveDevicePoolAdapter extends RecyclerView.Adapter<MBDeviceViewHolder>
+public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHolder>
 	{
 
 	// An object of RecyclerView.RecycledViewPool
@@ -22,11 +22,11 @@ public class MBSlaveDevicePoolAdapter extends RecyclerView.Adapter<MBDeviceViewH
 	// between the child and
 	// the parent RecyclerViews
 	//private RecyclerView.RecycledViewPool viewPool	= new RecyclerView.RecycledViewPool();
-	private SerialCommunicationLine slaveDevicePool;
+	private SerialCommLineViewModel serialCommLineViewModel;
 
-	MBSlaveDevicePoolAdapter(SerialCommunicationLine slaveDevicePool)
+	SerialCommLineAdapter(SerialCommLineViewModel serialCommLineViewModel)
 		{
-		this.slaveDevicePool = slaveDevicePool;
+		this.serialCommLineViewModel = serialCommLineViewModel;
 		}
 
 	@NonNull
@@ -45,19 +45,22 @@ public class MBSlaveDevicePoolAdapter extends RecyclerView.Adapter<MBDeviceViewH
 
 		// Create an instance of the ParentItem
 		// class for the given position
-		SlaveDevice deviceItem = slaveDevicePool.getDevice(position);
+		SlaveDeviceViewModel deviceItem = serialCommLineViewModel.slaveDeviceViewModels.get(position);
 
 		// For the created instance,
 		// get the title and set it
 		// as the text for the TextView
 		mbDeviceViewHolder.tvDeviceName.setText(deviceItem.getDeviceName() + " ID:" + deviceItem.getSlaveID());
-		mbDeviceViewHolder.expandingArea.setVisibility(
-				mbDeviceViewHolder.expandButton.getState() == InflateState.INFLATED ? View.VISIBLE : View.GONE);
+
+		InflateState inflateState = deviceItem.getInflateState();
+		mbDeviceViewHolder.expandingArea.setVisibility(inflateState == InflateState.INFLATED ? View.VISIBLE : View.GONE);
+		mbDeviceViewHolder.expandButton.setState(inflateState);
 		mbDeviceViewHolder.expandButton.setClickListener(null);
-
-
 		mbDeviceViewHolder.expandButton.setClickListener(state ->
-			mbDeviceViewHolder.expandingArea.setVisibility((state == InflateState.DEFLATED) ? View.GONE : View.VISIBLE));
+			 {
+			 mbDeviceViewHolder.expandingArea.setVisibility((state == InflateState.DEFLATED) ? View.GONE : View.VISIBLE);
+			 deviceItem.setInflateState(state);
+			 });
 
 
 		// Create a layout manager
@@ -77,7 +80,7 @@ public class MBSlaveDevicePoolAdapter extends RecyclerView.Adapter<MBDeviceViewH
 		// child RecyclerView is nested
 		// inside the parent RecyclerView,
 		// we use the following method
-		layoutManager.setInitialPrefetchItemCount(deviceItem.getMDOCount());
+		layoutManager.setInitialPrefetchItemCount(deviceItem.modbusDataObjectViewModels.size());
 
 		// Create an instance of the child
 		// item view adapter and set its
@@ -92,7 +95,7 @@ public class MBSlaveDevicePoolAdapter extends RecyclerView.Adapter<MBDeviceViewH
 	@Override
 	public int getItemCount()
 		{
-		return slaveDevicePool.getDevicesCount();
+		return serialCommLineViewModel.slaveDeviceViewModels.size();
 		}
 
 	}

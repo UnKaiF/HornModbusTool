@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,9 +20,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.basisdas.filedialogs.FileDialog;
-import com.basisdas.filedialogs.OpenFileDialog;
-import com.basisdas.filedialogs.SaveFileDialog;
+import com.basisdas.hornModbusTool.filedialogs.FileDialog;
+import com.basisdas.hornModbusTool.filedialogs.OpenFileDialog;
+import com.basisdas.hornModbusTool.filedialogs.SaveFileDialog;
 import com.basisdas.hornModbusTool.R;
 import com.basisdas.hornModbusTool.datamodels.Enums.InterpretationType;
 import com.basisdas.hornModbusTool.datamodels.SlaveDevice;
@@ -31,6 +32,9 @@ import com.basisdas.hornModbusTool.datamodels.utils.MDOParamConstructor;
 import com.basisdas.hornModbusTool.datamodels.MDOParameters;
 import com.basisdas.hornModbusTool.datamodels.ModbusDataObject;
 import com.basisdas.hornModbusTool.misc.InflateState;
+import com.basisdas.hornModbusTool.viewmodels.ModbusDataObjectViewModel;
+import com.basisdas.hornModbusTool.viewmodels.SerialCommLineViewModel;
+import com.basisdas.hornModbusTool.viewmodels.SlaveDeviceViewModel;
 import com.basisdas.hornModbusTool.views.custom.ExpandButton;
 import com.basisdas.jlibmodbusandroid.serial.SerialParameters;
 
@@ -61,6 +65,9 @@ public class SerialCommLineFragment extends Fragment implements
 
 	private int mPeriod = 1000;
 	private int mTimeout = 5000;
+
+	private ViewModelProvider viewModelProvider;
+	private SerialCommLineViewModel serialCommLineViewModel;
 
 	// TODO: Rename and change types of parameters
 	private String mParam1;
@@ -107,6 +114,7 @@ public class SerialCommLineFragment extends Fragment implements
 			mParam2 = getArguments().getString(ARG_PARAM2);
 			}
 		setHasOptionsMenu(true);
+		viewModelProvider = new ViewModelProvider(requireActivity());
 		}
 
 	@Override
@@ -115,7 +123,7 @@ public class SerialCommLineFragment extends Fragment implements
 		{
 		View view = inflater.inflate(R.layout.fragment_serial_comm_line, container, false);
 		ButterKnife.bind(this, view);
-		//SerialCommLineViewModel viewModel = new ViewModelProvider(getActivity()).get(SerialCommLineViewModel.class);
+		serialCommLineViewModel = viewModelProvider.get(SerialCommLineViewModel.class);
 		Some();
 		return view;
 		}
@@ -133,6 +141,7 @@ public class SerialCommLineFragment extends Fragment implements
 		super.onViewCreated(view, savedInstanceState);
 		toolbar.inflateMenu(R.menu.menu_main);
 		toolbar.setOnMenuItemClickListener(this);
+
 		}
 
 	@Override
@@ -242,45 +251,16 @@ public class SerialCommLineFragment extends Fragment implements
 
 	private void Some()
 		{
+		InflateState inflateState = serialCommLineViewModel.getInflateState();
+		expandSerialIntarfaceButton.setState(inflateState);
 		serialInterfaceToolBoxLayout.setVisibility(
 				expandSerialIntarfaceButton.getState() == InflateState.INFLATED ? View.VISIBLE : View.GONE);
 
 		expandSerialIntarfaceButton.setClickListener(state ->
-															 serialInterfaceToolBoxLayout.setVisibility((state == InflateState.DEFLATED) ? View.GONE : View.VISIBLE));
-
-		SerialCommunicationLine pool = SerialCommunicationLine.getInstance();
-
-		SlaveDevice device = new SlaveDevice(0x02, "Датчик угла наклона");
-
-		MDOParameters params = MDOParamConstructor.getMDOParameters();
-		ModbusDataObject mdo = new ModbusDataObject(params, "Тангаж");
-		mdo.setValue("21");
-		device.addMDO(mdo);
-
-		MDOParamConstructor.setMDOArea(MDOArea.Coil_singleWrite);
-		MDOParamConstructor.setElementType(InterpretationType.Float);
-		MDOParamConstructor.setStartingAddress(0xAAAA);
-
-		mdo = new ModbusDataObject(MDOParamConstructor.getMDOParameters(),  "Крен");
-		mdo.setValue("10.3");
-		device.addMDO(mdo);
-
-		pool.addDevice(device);
-
-		device = new SlaveDevice(99, "Адаптер ETS.USA");
-
-		MDOParamConstructor.setElementType(InterpretationType.Float);
-		MDOParamConstructor.setMDOArea(MDOArea.HoldingRegister_singleWrite);
-		MDOParamConstructor.setStartingAddress(3);
-		mdo = new ModbusDataObject(MDOParamConstructor.getMDOParameters(),  "Контроль тока");
-		mdo.setValue("57.47");
-		device.addMDO(mdo);
-
-		//pool.addDevice(device);
-
-
-
-
+				 {
+				 serialInterfaceToolBoxLayout.setVisibility((state == InflateState.DEFLATED) ? View.GONE : View.VISIBLE);
+				 serialCommLineViewModel.setInflateState(state);
+				 });
 
 		// Initialise the Linear layout manager
 		LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -289,18 +269,18 @@ public class SerialCommLineFragment extends Fragment implements
 		// to the parentItemAdapter.
 		// These arguments are passed
 		// using a method ParentItemList()
-		MBSlaveDevicePoolAdapter mbSlaveDevicePoolAdapter = new MBSlaveDevicePoolAdapter(pool);
+		SerialCommLineAdapter serialCommLineAdapter = new SerialCommLineAdapter(serialCommLineViewModel);
 
 		// Set the layout manager
 		// and adapter for items
 		// of the parent recyclerview
-		rv_devices.setAdapter(mbSlaveDevicePoolAdapter);
+		rv_devices.setAdapter(serialCommLineAdapter);
 		rv_devices.setLayoutManager(layoutManager);
 
 
+		tv_serialCommDevice.setText(serialCommLineViewModel.getCommDevicePath());
+		tv_serialParametersBlock.setText(serialCommLineViewModel.getCommDeviceParametersString());
 
-		tv_serialCommDevice.setText(pool.getSerialParameters().getDevice());
-		tv_serialParametersBlock.setText(pool.getSerialParameters().getParametersString());
 
 		}
 
