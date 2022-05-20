@@ -12,7 +12,7 @@ import com.basisdas.hornModbusTool.datamodels.Enums.MDOArea;
 public class MDOParamConstructor
 	{
 
-	private static final MDOParameters params;
+	private static  MDOParameters params;
 
 	//Параметры по умолчанию (непротиворечивые)
 	static

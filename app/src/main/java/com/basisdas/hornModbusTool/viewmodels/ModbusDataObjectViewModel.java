@@ -47,6 +47,16 @@ public class ModbusDataObjectViewModel extends Deflatable implements ITransactio
 		return mdo.getName();
 		}
 
+	public ModbusDataObject getMDO()
+		{
+		return mdo;
+		}
+
+	public void setMDO(ModbusDataObject mdo)
+		{
+		this.mdo = mdo;
+		}
+
 	@Override
 	public void deflateChilds() {}
 

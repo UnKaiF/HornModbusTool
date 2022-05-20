@@ -44,10 +44,12 @@
             android:layout_height="12sp" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dialog_mdo_starting_address_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/mdo_starting_address_hint"
-            app:boxBackgroundColor="@color/serial_device_background_color">
+            app:boxBackgroundColor="@color/serial_device_background_color"
+            app:errorEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dialog_mdo_starting_address_edit"

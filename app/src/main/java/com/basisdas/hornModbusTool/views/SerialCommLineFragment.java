@@ -28,6 +28,7 @@ import com.basisdas.hornModbusTool.R;
 import com.basisdas.hornModbusTool.datamodels.ModbusDataObject;
 import com.basisdas.hornModbusTool.misc.EntityState;
 import com.basisdas.hornModbusTool.misc.InflateState;
+import com.basisdas.hornModbusTool.viewmodels.ModbusDataObjectViewModel;
 import com.basisdas.hornModbusTool.viewmodels.SerialCommLineViewModel;
 import com.basisdas.hornModbusTool.viewmodels.SlaveDeviceViewModel;
 import com.basisdas.hornModbusTool.views.custom.CircleButton;
@@ -255,9 +256,18 @@ public class SerialCommLineFragment extends Fragment implements
 		}
 
 	@Override
-	public void onMDOConstructed(ModbusDataObject mdo)
+	public void onMDOConstructed(ModbusDataObject mdo, int deviceIndex, int mdoIndex)
 		{
-
+		SlaveDeviceViewModel deviceViewModel = serialCommLineViewModel.slaveDeviceViewModels.get(deviceIndex);
+		if (mdoIndex < 0)
+			{//Создаём новый ОДМ на устройстве deviceIndex
+			deviceViewModel.modbusDataObjectViewModels.add(0, new ModbusDataObjectViewModel(deviceViewModel, mdo));
+			}
+		else
+			{//Модифицируем существующий ОДМ
+			deviceViewModel.modbusDataObjectViewModels.get(mdoIndex).setMDO(mdo);
+			}
+		serialCommLineAdapter.notifyDataSetChanged();
 		}
 
 	private void Setup()
