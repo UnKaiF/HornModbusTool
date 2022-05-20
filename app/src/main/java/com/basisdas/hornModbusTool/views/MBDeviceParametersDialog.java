@@ -13,9 +13,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.basisdas.hornModbusTool.filedialogs.utils.KeyboardUtils;
 import com.basisdas.hornModbusTool.R;
+import com.google.android.material.textfield.TextInputEditText;
 
 public class MBDeviceParametersDialog extends DialogFragment implements Toolbar.OnMenuItemClickListener
 
@@ -23,15 +25,17 @@ public class MBDeviceParametersDialog extends DialogFragment implements Toolbar.
 
 	public static final String DEVICE_NAME = "device_name";
 	public static final String DEVICE_ID = "device_id";
+	public static final String INDEX = "item_index";
 
 	public static final String TITLE = "TITLE";
 	private String mTitle = "";
 	private int mToolbarTitleColor;
 
 	protected Toolbar mToolbar;
-	private String mDeviceName;
-	private int mDeviceId;
-
+	private TextInputEditText mEditTextDeviceName, mEditTextDeviceID;
+	private String mDeviceName = "";
+	private int mDeviceId = -1;
+	private int mIndex = -1;
 
 	protected int getLayoutResourceId()
 		{
@@ -67,6 +71,7 @@ public class MBDeviceParametersDialog extends DialogFragment implements Toolbar.
 			mDeviceName = savedInstanceState.getString(DEVICE_NAME, "Устройство Modbus");
 			mDeviceId = savedInstanceState.getInt(DEVICE_ID, 1);
 			mTitle = savedInstanceState.getString(TITLE);
+			mIndex = savedInstanceState.getInt(INDEX);
 			}
 		else
 			{
@@ -78,8 +83,17 @@ public class MBDeviceParametersDialog extends DialogFragment implements Toolbar.
 					mDeviceId = arguments.getInt(DEVICE_ID);
 				if (arguments.containsKey(TITLE))
 					mTitle = getArguments().getString(TITLE);
+				if (arguments.containsKey(INDEX))
+					mIndex = getArguments().getInt(INDEX);
 				}
 			}
+
+
+		mEditTextDeviceName = (TextInputEditText) view.findViewById(R.id.dialog_mbdevice_name);
+		mEditTextDeviceName.setText(mDeviceName);
+		mEditTextDeviceID =  (TextInputEditText) view.findViewById(R.id.dialog_mbdevice_id);
+		if (mDeviceId > 0)
+			mEditTextDeviceID.setText(Integer.toString(mDeviceId));
 
 
 		mToolbar = (Toolbar) view.findViewById(R.id.dialog_save_file_toolbar);
@@ -88,7 +102,6 @@ public class MBDeviceParametersDialog extends DialogFragment implements Toolbar.
 
 		mToolbar.setTitleTextColor(mToolbarTitleColor);
 		mToolbar.setTitle(mTitle);
-
 
 		mToolbar.setNavigationOnClickListener(new View.OnClickListener()
 			{
@@ -109,22 +122,23 @@ public class MBDeviceParametersDialog extends DialogFragment implements Toolbar.
 		outState.putString(DEVICE_NAME, mDeviceName);
 		outState.putInt(DEVICE_ID, mDeviceId);
 		outState.putString(TITLE, mTitle);
+		outState.putInt(INDEX, mIndex);
 		}
 
 	protected void sendResult()
 		{
 		Fragment targetFragment = getParentFragment();
 
-		if (targetFragment != null && targetFragment instanceof MBDeviceParametersUpatedListener)
+		if (targetFragment != null && targetFragment instanceof MBDeviceParametersCreatedListener)
 			{
-			((MBDeviceParametersUpatedListener) targetFragment).onMBDeviceParametersUpdated(this.mDeviceName, this.mDeviceId);
+			((MBDeviceParametersCreatedListener) targetFragment).onMBDeviceParametersCreated(this.mDeviceName, this.mDeviceId, this.mIndex);
 			}
 		else
 			{
 			Activity activity = getActivity();
-			if (activity != null && activity instanceof MBDeviceParametersUpatedListener)
+			if (activity != null && activity instanceof MBDeviceParametersCreatedListener)
 				{
-				((MBDeviceParametersUpatedListener) activity).onMBDeviceParametersUpdated(this.mDeviceName, this.mDeviceId);
+				((MBDeviceParametersCreatedListener) activity).onMBDeviceParametersCreated(this.mDeviceName, this.mDeviceId, this.mIndex);
 				}
 			}
 
@@ -141,18 +155,35 @@ public class MBDeviceParametersDialog extends DialogFragment implements Toolbar.
 		super.onDismiss(dialog);
 		}
 
-	public interface MBDeviceParametersUpatedListener
+	public interface MBDeviceParametersCreatedListener
 		{
-			void onMBDeviceParametersUpdated(String deviceName, int deviceId);
+			void onMBDeviceParametersCreated(String deviceName, int deviceId, int index);
 		}
 
-	//TODO: check input before user can press "apply"
 
 	@Override
 	public boolean onMenuItemClick(MenuItem menuItem)
 		{
 		if (menuItem.getItemId() == R.id.menu_apply)
 			{
+			String deviceName = mEditTextDeviceName.getEditableText().toString();
+			String deviceIDString = mEditTextDeviceID.getEditableText().toString();
+			int deviceID = -1;
+			try
+				{
+				deviceID = Integer.parseUnsignedInt(deviceIDString);
+				}
+			catch (NumberFormatException e)
+				{
+				deviceID = -1;
+				}
+
+			if (deviceName.isEmpty() || deviceIDString.isEmpty())	{ return false;	}
+
+			if (deviceID < 1 || deviceID > 65535) return false;
+
+			mDeviceId = deviceID;
+			mDeviceName = deviceName;
 			sendResult();
 			}
 		return false;

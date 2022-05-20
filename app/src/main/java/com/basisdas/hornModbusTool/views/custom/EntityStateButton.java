@@ -93,8 +93,8 @@ public class EntityStateButton extends CircleButton
 	public void setState(EntityState state)
 		{
 		if (state == null) return;
-		if (mState == EntityState.ACTIVE && state == EntityState.INACTIVE)
-			mSubstate = EntitySubState.UNKNOWN;
+		/*if (mState == EntityState.ACTIVE && state == EntityState.INACTIVE)
+			mSubstate = EntitySubState.UNKNOWN;*/
 		this.mState = state;
 		createDrawableState();
 		}

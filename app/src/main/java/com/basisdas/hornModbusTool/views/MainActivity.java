@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity
 			JournalViewModel journalViewModel = viewModelProvider.get(JournalViewModel.class);
 			journalViewModel.appendLine("Из активити");
 
+			serialCommLineViewModel.renewCommDevice(getApplicationContext());
+
 			serialCommLineViewModel.slaveDeviceViewModels.add(new SlaveDeviceViewModel(serialCommLineViewModel, new SlaveDevice(0x03, "Некий Датчик")));
 			MDOParameters params = MDOParamConstructor.getMDOParameters();
 			ModbusDataObject mdo = new ModbusDataObject(params, "Тангаж");

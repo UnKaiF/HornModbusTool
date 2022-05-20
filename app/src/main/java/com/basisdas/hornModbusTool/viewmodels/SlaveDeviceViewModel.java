@@ -114,9 +114,10 @@ public class SlaveDeviceViewModel extends Deflatable implements ITransactionFlow
 	@Override
 	public void deflateChilds()
 		{
+		this.deflate();
 		for (ModbusDataObjectViewModel modbusDataObjectViewModel: modbusDataObjectViewModels)
 			{
-			modbusDataObjectViewModel.deflateChilds();
+			modbusDataObjectViewModel.deflate();
 			}
 		}
 

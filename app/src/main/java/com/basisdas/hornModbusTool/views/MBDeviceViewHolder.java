@@ -35,3 +35,4 @@ class MBDeviceViewHolder extends RecyclerView.ViewHolder
 		rvMDOContainer = itemView.findViewById(R.id.recycler_view_mdo_container);
 		}
 	}
+

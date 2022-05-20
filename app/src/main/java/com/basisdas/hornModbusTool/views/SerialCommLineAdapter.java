@@ -1,9 +1,12 @@
 package com.basisdas.hornModbusTool.views;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +26,12 @@ public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHold
 	// the parent RecyclerViews
 	//private RecyclerView.RecycledViewPool viewPool	= new RecyclerView.RecycledViewPool();
 	private SerialCommLineViewModel serialCommLineViewModel;
+	private FragmentManager fragmentManager;
 
-	SerialCommLineAdapter(SerialCommLineViewModel serialCommLineViewModel)
+	SerialCommLineAdapter(SerialCommLineViewModel serialCommLineViewModel, FragmentManager fragmentManager)
 		{
 		this.serialCommLineViewModel = serialCommLineViewModel;
+		this.fragmentManager = fragmentManager;
 		}
 
 	@NonNull
@@ -62,7 +67,44 @@ public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHold
 			 deviceItem.setInflateState(state);
 			 });
 
+		mbDeviceViewHolder.cbDeleteDeviceButton.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View view)
+				{
+				int pos = mbDeviceViewHolder.getAdapterPosition();
+				serialCommLineViewModel.slaveDeviceViewModels.remove(pos);
+				notifyItemRemoved(pos);
+				return true;
+				}
+		});
 
+		mbDeviceViewHolder.cbDeviceProperties.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View view)
+				{
+				int pos = mbDeviceViewHolder.getAdapterPosition();
+				Bundle args = new Bundle();
+				args.putString("TITLE", "Параметры устройства");
+				args.putInt(MBDeviceParametersDialog.INDEX, pos);
+				args.putString(MBDeviceParametersDialog.DEVICE_NAME, serialCommLineViewModel.slaveDeviceViewModels.get(pos).getDeviceName());
+				args.putInt(MBDeviceParametersDialog.DEVICE_ID, serialCommLineViewModel.slaveDeviceViewModels.get(pos).getSlaveID());
+				MBDeviceParametersDialog mbDialog = new MBDeviceParametersDialog();
+				mbDialog.setArguments(args);
+				mbDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+				mbDialog.show(fragmentManager, MBDeviceParametersDialog.class.getName());
+				return true;
+				}
+		});
+
+		//TODO : add new MDO
+		mbDeviceViewHolder.cbAddMDOButton.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View view)
+				{
+				//TODO: !!!!!! THIS
+				return true;
+				}
+		});
 		// Create a layout manager
 		// to assign a layout
 		// to the RecyclerView.
@@ -96,6 +138,11 @@ public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHold
 	public int getItemCount()
 		{
 		return serialCommLineViewModel.slaveDeviceViewModels.size();
+		}
+
+	public interface SlaveDeviceParametersEditListener
+		{
+		void onMBDeviceParametersEdit(int deviceIndex, String deviceName, int deviceID);
 		}
 
 	}

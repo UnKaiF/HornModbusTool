@@ -59,12 +59,13 @@ public class SerialCommLineViewModel extends Deflatable implements ITransactionF
 		{
 		if (serialCommunicationLine.renewCommDevice(context))
 			{
-			setEntitySubState(EntitySubState.UNKNOWN);
+			setEntitySubState(EntitySubState.GOOD);
 			setState(EntityState.ACTIVE);
 			}
 		else
 			{
-			setState(EntityState.INACTIVE);
+			setState(EntityState.ACTIVE);
+			setEntitySubState(EntitySubState.ERROR);
 			}
 		}
 
@@ -139,6 +140,7 @@ public class SerialCommLineViewModel extends Deflatable implements ITransactionF
 	@Override
 	public void deflateChilds()
 		{
+		this.deflate();
 		for (SlaveDeviceViewModel slaveDeviceVm: slaveDeviceViewModels)
 			{
 			slaveDeviceVm.deflateChilds();
