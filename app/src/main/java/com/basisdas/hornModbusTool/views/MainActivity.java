@@ -52,30 +52,8 @@ public class MainActivity extends AppCompatActivity
 			{
 			SerialCommLineViewModel serialCommLineViewModel = viewModelProvider.get(SerialCommLineViewModel.class);
 			JournalViewModel journalViewModel = viewModelProvider.get(JournalViewModel.class);
-			journalViewModel.appendLine("Из активити");
-
+			//journalViewModel.appendLine("Из активити");
 			serialCommLineViewModel.renewCommDevice(getApplicationContext());
-
-			serialCommLineViewModel.slaveDeviceViewModels.add(new SlaveDeviceViewModel(serialCommLineViewModel, new SlaveDevice(0x03, "Некий Датчик")));
-			MDOParameters params = MDOParamConstructor.getMDOParameters();
-			ModbusDataObject mdo = new ModbusDataObject(params, "Тангаж");
-			mdo.setValue("21");
-			serialCommLineViewModel.slaveDeviceViewModels.get(0).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(0), mdo));
-			MDOParamConstructor.setMDOArea(MDOArea.Coil_singleWrite);
-			MDOParamConstructor.setElementType(InterpretationType.Float);
-			MDOParamConstructor.setStartingAddress(0xAAAA);
-			mdo = new ModbusDataObject(MDOParamConstructor.getMDOParameters(),  "Крен");
-			mdo.setValue("10.3");
-			serialCommLineViewModel.slaveDeviceViewModels.get(0).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(0),  mdo));
-
-			serialCommLineViewModel.slaveDeviceViewModels.add(new SlaveDeviceViewModel(serialCommLineViewModel, new SlaveDevice(99, "Адаптер ETS.USA")));
-			MDOParamConstructor.setElementType(InterpretationType.Decimal);
-			MDOParamConstructor.setMDOArea(MDOArea.HoldingRegister_singleWrite);
-			MDOParamConstructor.setStartingAddress(3);
-			mdo = new ModbusDataObject(MDOParamConstructor.getMDOParameters(),  "Контроль тока");
-			mdo.setValue("57");
-			serialCommLineViewModel.slaveDeviceViewModels.get(1).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(1), mdo));
-
 			}
 		}
 

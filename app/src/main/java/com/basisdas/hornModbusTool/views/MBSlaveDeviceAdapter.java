@@ -3,6 +3,7 @@ package com.basisdas.hornModbusTool.views;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,18 +23,22 @@ import com.basisdas.hornModbusTool.viewmodels.SlaveDeviceViewModel;
 import com.basisdas.hornModbusTool.views.custom.CircleButton;
 import com.basisdas.hornModbusTool.views.custom.EntityStateButton;
 
+import java.util.List;
+
 public class MBSlaveDeviceAdapter extends RecyclerView.Adapter<MDOViewHolder>
 	{
 
 	private SlaveDeviceViewModel slaveDeviceViewModel;
 	private FragmentManager fragmentManager;
 	private MBDeviceViewHolder deviceViewHolder;
+	private Fragment fragment;
 
 	// Constuctor
-	MBSlaveDeviceAdapter(SlaveDeviceViewModel slaveDeviceViewModel, MBDeviceViewHolder deviceViewHolder, FragmentManager fragmentManager)
+	MBSlaveDeviceAdapter(SlaveDeviceViewModel slaveDeviceViewModel, MBDeviceViewHolder deviceViewHolder, Fragment fragment)
 		{
 		this.slaveDeviceViewModel = slaveDeviceViewModel;
-		this.fragmentManager = fragmentManager;
+		this.fragment = fragment;
+		this.fragmentManager = fragment.getChildFragmentManager();
 		this.deviceViewHolder = deviceViewHolder;
 		}
 
@@ -116,7 +121,37 @@ public class MBSlaveDeviceAdapter extends RecyclerView.Adapter<MDOViewHolder>
 				}
 			});
 
+		//Read MDO click listener
+		mdoViewHolder.mdoNameNValue.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view)
+				{
+				int mdoIndex = mdoViewHolder.getAdapterPosition();
+				int deviceIndex = deviceViewHolder.getAdapterPosition();
+				if (fragment != null && fragment instanceof ReadMDOActionClickListener)
+					{
+					((ReadMDOActionClickListener) fragment).onClickReadMDO(deviceIndex, mdoIndex);
+					}
+				}
+		});
 
+		//Write MDO dialog
+		mdoViewHolder.mdoNameNValue.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View view)
+				{
+				int mdoIndex = mdoViewHolder.getAdapterPosition();
+				Bundle args = new Bundle();
+				args.putString("TITLE", "Запись ОДМ !");
+				args.putString(MDOValueUpdateDialog.MDO, JsonParser.getGsonParser().toJson(slaveDeviceViewModel.modbusDataObjectViewModels.get(mdoIndex).getMDO()));
+				MDOValueUpdateDialog mbDialog = new MDOValueUpdateDialog();
+
+				mbDialog.setArguments(args);
+				mbDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+				mbDialog.show(fragmentManager, MDOValueUpdateDialog.class.getName());
+				return true;
+				}
+		});
 
 		}
 

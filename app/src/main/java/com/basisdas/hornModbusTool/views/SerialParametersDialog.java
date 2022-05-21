@@ -111,6 +111,10 @@ public class SerialParametersDialog extends DialogFragment implements Toolbar.On
 		mStopBitsSpinner.setAdapter(stopBitsAdapter);
 
 		//TODO: Spinner state restore from local SerialParameters (mSp)
+		mBaudRateSpinner.setSelection(SerialPort.BaudRate.getBaudRate(mSp.getBaudRate()).ordinal(),false);
+		mParityBitsSpinner.setSelection(mSp.getParity().ordinal(),false);
+		mDataBitsSpinner.setSelection(mSp.getDataBits() - 7,false);
+		mStopBitsSpinner.setSelection(mSp.getStopBits() - 1 ,false);
 
 		mToolbar = (Toolbar) view.findViewById(R.id.dialog_save_file_toolbar);
 		mToolbar.inflateMenu(R.menu.toolbar_menu_apply);
@@ -175,6 +179,10 @@ public class SerialParametersDialog extends DialogFragment implements Toolbar.On
 		{
 		if (menuItem.getItemId() == R.id.menu_apply)
 			{
+			mSp.setBaudRate(SerialPort.BaudRate.values()[(int)mBaudRateSpinner.getSelectedItemId()]);
+			mSp.setDataBits(databits[(int)mDataBitsSpinner.getSelectedItemId()]);
+			mSp.setParity(SerialPort.Parity.values()[(int)mParityBitsSpinner.getSelectedItemId()]);
+			mSp.setStopBits(stopbits[(int)mStopBitsSpinner.getSelectedItemId()]);
 			sendResult();
 			}
 		return false;

@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,13 +21,19 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.basisdas.hornModbusTool.datamodels.Enums.InterpretationType;
+import com.basisdas.hornModbusTool.datamodels.Enums.MDOArea;
+import com.basisdas.hornModbusTool.datamodels.MDOParameters;
 import com.basisdas.hornModbusTool.datamodels.SlaveDevice;
+import com.basisdas.hornModbusTool.datamodels.utils.JsonParser;
+import com.basisdas.hornModbusTool.datamodels.utils.MDOParamConstructor;
 import com.basisdas.hornModbusTool.filedialogs.FileDialog;
 import com.basisdas.hornModbusTool.filedialogs.OpenFileDialog;
 import com.basisdas.hornModbusTool.filedialogs.SaveFileDialog;
 import com.basisdas.hornModbusTool.R;
 import com.basisdas.hornModbusTool.datamodels.ModbusDataObject;
 import com.basisdas.hornModbusTool.misc.EntityState;
+import com.basisdas.hornModbusTool.misc.EntitySubState;
 import com.basisdas.hornModbusTool.misc.InflateState;
 import com.basisdas.hornModbusTool.viewmodels.ModbusDataObjectViewModel;
 import com.basisdas.hornModbusTool.viewmodels.SerialCommLineViewModel;
@@ -53,7 +60,9 @@ public class SerialCommLineFragment extends Fragment implements
 		SerialParametersDialog.SerialParametersUpdateListener,
 		MBDeviceParametersDialog.MBDeviceParametersCreatedListener,
 		MDOValueUpdateDialog.MDOValueUpdateListener,
-		MDOConstructorDialog.MDOConstructorDoneListener
+		MDOConstructorDialog.MDOConstructorDoneListener,
+
+		ReadMDOActionClickListener
 	{
 
 	// TODO: Rename parameter arguments, choose names that match
@@ -161,28 +170,9 @@ public class SerialCommLineFragment extends Fragment implements
 				dialog.show(getChildFragmentManager(), TimesDialog.class.getName());
 				break;
 			case R.id.menu_auto_query:
-/*
-				args.putString("TITLE","Параметры коммуникации");
-				SerialParametersDialog spDialog = new SerialParametersDialog();
-				spDialog.setArguments(args);
-				spDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
-				spDialog.show(getChildFragmentManager(), SerialParametersDialog.class.getName());
-*/
-				args.putString("TITLE", "Запись ОДМ !");
-				MDOValueUpdateDialog mbDialog = new MDOValueUpdateDialog();
-				mbDialog.setArguments(args);
-				mbDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
-				mbDialog.show(getChildFragmentManager(), MDOValueUpdateDialog.class.getName());
 
 				break;
 			case R.id.menu_deflate_all:
-				/*
-				args.putString("TITLE", "Новый ОДМ");
-				MDOConstructorDialog mdoDialog = new MDOConstructorDialog();
-				mdoDialog.setArguments(args);
-				mdoDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
-				mdoDialog.show(getChildFragmentManager(), MDOConstructorDialog.class.getName());
-				 */
 				serialCommLineViewModel.deflateAll();
 				expandSerialIntarfaceButton.setState(InflateState.DEFLATED);
 				serialInterfaceToolBoxLayout.setVisibility(View.GONE);
@@ -190,12 +180,36 @@ public class SerialCommLineFragment extends Fragment implements
 				break;
 			case R.id.menu_load_map:
 				showFileDialog(new OpenFileDialog(), OpenFileDialog.class.getName());
+				loadMock();
 				break;
 			case R.id.menu_save_map:
 				showFileDialog(new SaveFileDialog(), OpenFileDialog.class.getName());
 				break;
 			}
 		return false;
+		}
+
+	private void loadMock()
+		{
+		serialCommLineViewModel.slaveDeviceViewModels.add(new SlaveDeviceViewModel(serialCommLineViewModel, new SlaveDevice(0x02, "Датчик угла наклона")));
+		MDOParameters params = MDOParamConstructor.getMDOParameters();
+		ModbusDataObject mdo = new ModbusDataObject(params, "HWVersion");
+		mdo.setValue("?");
+		serialCommLineViewModel.slaveDeviceViewModels.get(0).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(0), mdo));
+		MDOParamConstructor.setMDOArea(MDOArea.Coil_singleWrite);
+		MDOParamConstructor.setElementType(InterpretationType.Float);
+		MDOParamConstructor.setStartingAddress(0xAAAA);
+		mdo = new ModbusDataObject(MDOParamConstructor.getMDOParameters(),  "Крен");
+		mdo.setValue("10.3");
+		serialCommLineViewModel.slaveDeviceViewModels.get(0).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(0),  mdo));
+
+		serialCommLineViewModel.slaveDeviceViewModels.add(new SlaveDeviceViewModel(serialCommLineViewModel, new SlaveDevice(99, "Адаптер ETS.USA")));
+		MDOParamConstructor.setElementType(InterpretationType.Decimal);
+		MDOParamConstructor.setMDOArea(MDOArea.HoldingRegister_singleWrite);
+		MDOParamConstructor.setStartingAddress(3);
+		mdo = new ModbusDataObject(MDOParamConstructor.getMDOParameters(),  "Контроль тока");
+		mdo.setValue("57");
+		serialCommLineViewModel.slaveDeviceViewModels.get(1).modbusDataObjectViewModels.add(new ModbusDataObjectViewModel(serialCommLineViewModel.slaveDeviceViewModels.get(1), mdo));
 		}
 
 	private void showFileDialog(FileDialog dialog, String tag)
@@ -218,18 +232,27 @@ public class SerialCommLineFragment extends Fragment implements
 	@Override
 	public void onFileSelected(FileDialog dialog, File file)
 		{
-		if (dialog.getClass().getName().equalsIgnoreCase(OpenFileDialog.class.getName()))
-			{
-			}
-		else
-			{
-			}
+		serialCommLineAdapter.notifyDataSetChanged();
 		}
 
 	@Override
 	public void onSerialParametersUpdated(SerialParameters sp)
 		{
-
+		SerialParameters actual = serialCommLineViewModel.getCommDeviceParameters();
+		if (
+			actual.getBaudRate() != sp.getBaudRate() ||
+			actual.getDataBits() != sp.getDataBits() ||
+			actual.getParity() != sp.getParity() ||
+			actual.getStopBits() != sp.getStopBits()
+			)
+			{
+			serialCommLineViewModel.setCommDeviceParameters(sp);
+			serialCommLineViewModel.renewCommDevice(getContext().getApplicationContext());
+			tv_serialCommDevice.setText(serialCommLineViewModel.getCommDevicePath());
+			tv_serialParametersBlock.setText(serialCommLineViewModel.getCommDeviceParametersString());
+			btn_SerialInterfaceState.setState(serialCommLineViewModel.getState());
+			btn_SerialInterfaceState.setSubState(serialCommLineViewModel.getEntitySubState());
+			}
 		}
 
 	@Override
@@ -253,6 +276,16 @@ public class SerialCommLineFragment extends Fragment implements
 	public void onMDOValueUpdated(ModbusDataObject mdo, String value)
 		{
 
+		}
+
+	@Override
+	public void onClickReadMDO(int deviceIndex, int mdoIndex)
+		{
+		//Get transaction
+		serialCommLineViewModel.slaveDeviceViewModels.get(deviceIndex).modbusDataObjectViewModels.get(mdoIndex).setEntitySubState(EntitySubState.UNKNOWN);
+		serialCommLineAdapter.notifyDataSetChanged();
+		serialCommLineViewModel.performTransaction(deviceIndex, mdoIndex, null);
+		serialCommLineAdapter.notifyDataSetChanged();
 		}
 
 	@Override
@@ -322,6 +355,23 @@ public class SerialCommLineFragment extends Fragment implements
 				}
 		});
 
+		//диалог серийных параметров
+		tv_serialParametersBlock.setOnLongClickListener(new View.OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View view)
+				{
+				Bundle args = new Bundle();
+				args.putString("TITLE","Параметры коммуникации");
+				String json = JsonParser.getGsonParser().toJson(serialCommLineViewModel.getCommDeviceParameters());
+				args.putString(SerialParametersDialog.SERIAL_PARAMETERS, json);
+				SerialParametersDialog spDialog = new SerialParametersDialog();
+				spDialog.setArguments(args);
+				spDialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_HornModbusTool);
+				spDialog.show(getChildFragmentManager(), SerialParametersDialog.class.getName());
+				return true;
+				}
+		});
+
 		// Initialise the Linear layout manager
 		LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
@@ -329,7 +379,7 @@ public class SerialCommLineFragment extends Fragment implements
 		// to the parentItemAdapter.
 		// These arguments are passed
 		// using a method ParentItemList()
-		serialCommLineAdapter = new SerialCommLineAdapter(serialCommLineViewModel, getChildFragmentManager());
+		serialCommLineAdapter = new SerialCommLineAdapter(serialCommLineViewModel, this);
 
 		// Set the layout manager
 		// and adapter for items

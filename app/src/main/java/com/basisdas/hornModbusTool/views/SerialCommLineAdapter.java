@@ -2,6 +2,7 @@ package com.basisdas.hornModbusTool.views;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.basisdas.hornModbusTool.misc.EntityState;
 import com.basisdas.hornModbusTool.misc.InflateState;
 import com.basisdas.hornModbusTool.viewmodels.SerialCommLineViewModel;
 import com.basisdas.hornModbusTool.viewmodels.SlaveDeviceViewModel;
+import com.basisdas.hornModbusTool.views.custom.EntityStateButton;
 
 public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHolder>
 	{
@@ -28,11 +30,13 @@ public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHold
 	//private RecyclerView.RecycledViewPool viewPool	= new RecyclerView.RecycledViewPool();
 	private SerialCommLineViewModel serialCommLineViewModel;
 	private FragmentManager fragmentManager;
+	private Fragment fragment;
 
-	SerialCommLineAdapter(SerialCommLineViewModel serialCommLineViewModel, FragmentManager fragmentManager)
+	SerialCommLineAdapter(SerialCommLineViewModel serialCommLineViewModel, Fragment fragment)
 		{
 		this.serialCommLineViewModel = serialCommLineViewModel;
-		this.fragmentManager = fragmentManager;
+		this.fragment = fragment;
+		this.fragmentManager = fragment.getChildFragmentManager();
 		}
 
 	@NonNull
@@ -51,14 +55,14 @@ public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHold
 
 		// Create an instance of the ParentItem
 		// class for the given position
-		SlaveDeviceViewModel deviceItem = serialCommLineViewModel.slaveDeviceViewModels.get(position);
+		SlaveDeviceViewModel slaveDeviceViewModel = serialCommLineViewModel.slaveDeviceViewModels.get(position);
 
 		// For the created instance,
 		// get the title and set it
 		// as the text for the TextView
-		mbDeviceViewHolder.tvDeviceName.setText(deviceItem.getDeviceName() + " ID:" + deviceItem.getSlaveID());
+		mbDeviceViewHolder.tvDeviceName.setText(slaveDeviceViewModel.getDeviceName() + " ID:" + slaveDeviceViewModel.getSlaveID());
 
-		InflateState inflateState = deviceItem.getInflateState();
+		InflateState inflateState = slaveDeviceViewModel.getInflateState();
 		mbDeviceViewHolder.expandingArea.setVisibility(inflateState == InflateState.INFLATED ? View.VISIBLE : View.GONE);
 		mbDeviceViewHolder.expandButton.setState(inflateState);
 		mbDeviceViewHolder.expandButton.setClickListener(null);
@@ -97,6 +101,17 @@ public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHold
 				}
 		});
 
+		//State & substate  clicklisterer
+		mbDeviceViewHolder.entityStateButton.setState(slaveDeviceViewModel.getState());
+		mbDeviceViewHolder.entityStateButton.setSubState(slaveDeviceViewModel.getEntitySubState());
+		mbDeviceViewHolder.entityStateButton.setClickListener(new EntityStateButton.ClickListener() {
+			@Override
+			public void onStateChanged(EntityState state)
+				{
+				int pos = mbDeviceViewHolder.getAdapterPosition();
+				serialCommLineViewModel.slaveDeviceViewModels.get(pos).setState(state);
+				}
+		});
 
 		mbDeviceViewHolder.cbAddMDOButton.setOnLongClickListener(new View.OnLongClickListener() {
 			@Override
@@ -130,12 +145,12 @@ public class SerialCommLineAdapter extends RecyclerView.Adapter<MBDeviceViewHold
 		// child RecyclerView is nested
 		// inside the parent RecyclerView,
 		// we use the following method
-		layoutManager.setInitialPrefetchItemCount(deviceItem.modbusDataObjectViewModels.size());
+		layoutManager.setInitialPrefetchItemCount(slaveDeviceViewModel.modbusDataObjectViewModels.size());
 
 		// Create an instance of the child
 		// item view adapter and set its
 		// adapter, layout manager and RecyclerViewPool
-		MBSlaveDeviceAdapter MBSlaveDeviceAdapter = new MBSlaveDeviceAdapter(deviceItem, mbDeviceViewHolder, fragmentManager);
+		MBSlaveDeviceAdapter MBSlaveDeviceAdapter = new MBSlaveDeviceAdapter(slaveDeviceViewModel, mbDeviceViewHolder, fragment);
 		mbDeviceViewHolder.rvMDOContainer.setLayoutManager(layoutManager);
 		mbDeviceViewHolder.rvMDOContainer.setAdapter(MBSlaveDeviceAdapter);
 		//mbDeviceViewHolder.rvMDOContainer.setRecycledViewPool(viewPool);

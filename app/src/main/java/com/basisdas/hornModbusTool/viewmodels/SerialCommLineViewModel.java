@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.basisdas.hornModbusTool.datamodels.*;
 import com.basisdas.hornModbusTool.datamodels.TransactionObject;
+import com.basisdas.hornModbusTool.datamodels.utils.MDOInterpreter;
 import com.basisdas.hornModbusTool.misc.EntityState;
 import com.basisdas.hornModbusTool.misc.EntitySubState;
 import com.basisdas.jlibmodbusandroid.serial.SerialParameters;
@@ -69,6 +70,29 @@ public class SerialCommLineViewModel extends Deflatable implements ITransactionF
 			}
 		}
 
+
+	public void performTransaction(int deviceIndex, int mdoIndex, String value)
+		{
+		boolean isReadTransaction = (value == null);
+		SlaveDeviceViewModel slaveVM = slaveDeviceViewModels.get(deviceIndex);
+		ModbusDataObjectViewModel mdoVm = slaveVM.modbusDataObjectViewModels.get(mdoIndex);
+
+		if (slaveVM.getState() == EntityState.INACTIVE || mdoVm.getState() == EntityState.INACTIVE)
+			return;
+
+		MDOParameters para = mdoVm.getParams();
+		MDODataContainer container = MDOInterpreter.getInstance().fromStringValue(para, value);
+		TransactionObject tro = new TransactionObject(isReadTransaction, para, container);
+
+		tro.slaveID = slaveVM.getSlaveID();
+		tro = serialCommunicationLine.getTransaction(tro);
+		mdoVm.setEntitySubState(tro.exception == null ? EntitySubState.GOOD : EntitySubState.ERROR);
+		if (tro.parameters.registersSwapped)
+			tro.container.swapRegisters(tro.parameters.elementBitSize.getBitSize());
+		if (tro.parameters.elementsReversed)
+			tro.container.reverseBasicElements(tro.parameters.elementBitSize.getBitSize());
+ 		mdoVm.setValue(MDOInterpreter.getInstance().toStringValue(para, tro.container));
+		}
 
 /*
 	public int addDevice(SlaveDeviceViewModel slaveDeviceViewModel)

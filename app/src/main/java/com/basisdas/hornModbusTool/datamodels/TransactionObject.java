@@ -8,7 +8,7 @@ public class TransactionObject
 	public int slaveID;
 	public MDOParameters parameters;
 	public MDODataContainer container;
-	public TransactionException exception = null;
+	public String exception = null;
 
 	public TransactionObject(boolean isReadTransaction, MDOParameters parameters, MDODataContainer container)
 		{

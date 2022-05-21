@@ -67,9 +67,6 @@ public class LogFragment extends Fragment implements Toolbar.OnMenuItemClickList
 	private String mParam1;
 	private String mParam2;
 
-	SerialParameters sp;
-	ArrayList<Double> times;
-
 	@BindView(R.id.toolbar_log)
 	androidx.appcompat.widget.Toolbar toolbar;
 	@BindView(R.id.memo)
@@ -110,16 +107,6 @@ public class LogFragment extends Fragment implements Toolbar.OnMenuItemClickList
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 			}
-
-		SerialUtils.setSerialPortFactory(new SerialPortFactoryUSBSerialAndroid(), getActivity().getApplicationContext());
-
-		sp = new SerialParameters(null, //port full path
-								  SerialPort.BaudRate.BAUD_RATE_19200,
-								  8, //Data bits
-								  1, //Stop bits
-								  SerialPort.Parity.NONE);
-		times = new ArrayList<Double>();
-
 		}
 
 	@Override
@@ -162,7 +149,6 @@ public class LogFragment extends Fragment implements Toolbar.OnMenuItemClickList
 			case R.id.menu_support_log:
 				break;
 			case R.id.menu_help_log:
-				dojob();
 				break;
 			}
 		return false;
@@ -224,87 +210,6 @@ public class LogFragment extends Fragment implements Toolbar.OnMenuItemClickList
 		scrollView.scrollTo(0, memo.getHeight());
 		}
 
-	public void dojob()
-		{
-		long startNanoTime;
-		Context appContext = ((AppCompatActivity) getActivity()).getApplicationContext();
-
-		List<String> ports = AndroidUSBSerialPortResolver.getAvailiblePortIdentifiers(appContext);
-		if (ports.isEmpty())
-			{
-			appendMemoLine("No usb serial ports:");
-			return;
-			}
-
-		sp.setDevice(ports.get(0));
-
-
-		UsbDevice device = AndroidUSBSerialPortResolver.getUsbDevice(sp.getDevice(), appContext);
-		UsbManager manager = (UsbManager) appContext.getSystemService(Context.USB_SERVICE);
-		//TODO handle usb device disconnection
-		if (device == null)
-			{
-			appendMemoLine("Device disconnected !");
-			return;
-			}
-
-		if (manager.hasPermission(device))
-			{
-			try
-				{
-				ModbusMaster master = ModbusMasterFactory.createModbusMasterRTU(sp);
-				//валиться на connect() при отсутствии устройства
-				master.connect();
-				try
-					{
-					appendMemoLine("[" + getCurrentTimeStamp() + "]");
-					appendMemoLine("Датчик угла поворота (ID:2)");
-					appendMemoLine("Аппаратная версия (HoldingRegisters, Start:16, Integer, 32 bit)");
-					appendMemoLine("Посылаю: 0x02,0x03,0x00,0x10,0x00,0x02,0xC5,0xFD");
-					appendMemoLine("Получено: 0x02,0x03,0x04,0x01,0x34,0x3E,0x43,0xD8,0x90");
-					startNanoTime = System.nanoTime();
-					int[] HWversionRegisterValues = master.readHoldingRegisters(0x02, 0x10, 2);
-					times.add((System.nanoTime() - startNanoTime) / 1000000.0);
-					int HWvervion = HWversionRegisterValues[0] << 16 | HWversionRegisterValues[1];
-					appendMemoLine("Значение: " + HWvervion);
-					appendMemoLine("Транзакция " + times.get(times.size() - 1) + " mS");
-					if (times.size() == 100)
-						Log.d("times", times.toString());
-					/*appendMemoLine("Trying to read ETS.TILT temperature sensor...");
-					int[] temperature = master.readHoldingRegisters(0x02, 0x23, 1);
-					appendMemoLine("Temperature = " + temperature[0]);
-					*/
-					}
-				catch (RuntimeException e)
-					{
-					throw e;
-					}
-				finally
-					{
-					try
-						{
-						master.disconnect();
-						}
-					catch (ModbusIOException e1)
-						{
-						e1.printStackTrace();
-						}
-					}
-				}
-			catch (Exception e)
-				{//Timeout handled here.. now
-				appendMemoLine("Exception " + e.getMessage());
-				}
-			}
-		else
-			{
-			appendMemoLine("No such permissions to open port: " + sp.getDevice());
-			PendingIntent permissionIntent = PendingIntent.getBroadcast(appContext, 0, new Intent("ACTION.USB_PERMISSION"), 0);
-			manager.requestPermission(device, permissionIntent);
-			}
-
-
-		}
 
 	/**
 	 * @return yyyy-MM-dd HH:mm:ss formate date as string
